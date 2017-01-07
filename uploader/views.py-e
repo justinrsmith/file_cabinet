@@ -34,8 +34,11 @@ def uploader(request, project=None):
         #TODO: request.FILES?
         form = UploadedFileForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect(reverse('uploader'))
+            uploaded_file = form.save(commit=False)
+            uploaded_file.project_id = project
+            uploaded_file.user_id = request.user.id
+            uploaded_file.save()
+            return redirect('/'+project)
 
     return render(request, 'dashboard.html', {
         'form': form,
