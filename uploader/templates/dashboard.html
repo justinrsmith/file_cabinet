@@ -58,7 +58,7 @@
                   <tbody>
                       {% for f in files %}
                           <tr>
-                              <td>{% if f.name %}{{ f.name }}{% else %}{{ f.file.name }}{% endif %}</td>
+                              <td><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.file.name }}{% endif %}{{f.revision}}</a></td>
                               <td>{{ f.revision }}</td>
                               <td>{{ f.extension }}</td>
                               <td>{{ f.datetime }}</td>
