@@ -8,6 +8,6 @@
         <input type="submit" value="Upload" />
     </form>
     {% for f in files %}
-        <p><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.file.name }}{% endif %}</a></p>
+        <p><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.file.name }}{% endif %}{{f.revision}}</a></p>
     {% endfor %}
 </div>

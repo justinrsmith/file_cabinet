@@ -7,6 +7,8 @@ from django.urls import reverse
 def uploader(request):
     form = UploadedFileForm()
     files = UploadedFile.objects.all()
+    revisions = [f.revision for f in files]
+    revisions = list(set(revisions))
 
     if request.method == 'POST':
         #TODO: request.FILES?
@@ -15,7 +17,21 @@ def uploader(request):
             form.save()
             return redirect(reverse('uploader'))
 
-    return render(request, 'uploader.html', {
+    return render(request, 'dashboard.html', {
         'form': form,
-        'files': files
+        'files': files,
+        'revisions': revisions
+    })
+
+def revisions(request):
+    files = UploadedFile.objects.all()
+    revisions = [f.revision for f in files]
+    revisions = list(set(revisions))
+    form = UploadedFileForm()
+    files = UploadedFile.objects.filter(revision=request.POST['revision'])
+
+    return render(request, 'dashboard.html', {
+        'form': form,
+        'files': files,
+        'revisions': revisions
     })
