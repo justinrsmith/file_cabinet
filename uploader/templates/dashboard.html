@@ -36,8 +36,9 @@
                   <form action="/revisions/" method="post">
                       {% csrf_token %}
                       <select name="revision" class="form-control" onchange="this.form.submit()">
+                          <option value=""></option>
                           {% for r in revisions %}
-                          <option value="{{r}}">Revision {{r}}</option>
+                              <option value="{{r}}">Revision {{r}}</option>
                           {% endfor %}
                       </select>
                   </form>
