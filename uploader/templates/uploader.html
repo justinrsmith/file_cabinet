@@ -1,0 +1,13 @@
+<div>
+    <h3>File Uploader</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <p>{{ field.label }}{{ field }}</p>
+        {% endfor %}
+        <input type="submit" value="Upload" />
+    </form>
+    {% for f in files %}
+        <p><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.file.name }}{% endif %}</a></p>
+    {% endfor %}
+</div>
