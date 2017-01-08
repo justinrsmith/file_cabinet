@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
-from uploader.forms import UploadedFileForm
-from uploader.models import UploadedFile, Project
 from django.urls import reverse
 from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+
+
+from uploader.forms import UploadedFileForm
+from uploader.models import UploadedFile, Project
 
 def login_view(request):
     if request.method == 'POST':
@@ -17,12 +20,14 @@ def login_view(request):
 
 def projects(request):
     if request.method == 'POST':
-        return redirect('/'+request.POST['project'])
+        return redirect('/filecabinet/'+request.POST['project'])
     groups = request.user.groups.all()
     projects = Project.objects.filter(group__in=groups)
     return render(request, 'projects.html', {
         'projects': projects
     })
+
+@login_required
 # Create your views here.
 def uploader(request, project=None):
     form = UploadedFileForm()
@@ -38,12 +43,13 @@ def uploader(request, project=None):
             uploaded_file.project_id = project
             uploaded_file.user_id = request.user.id
             uploaded_file.save()
-            return redirect('/'+project)
+            return redirect('/filecabinet/'+project)
 
     return render(request, 'dashboard.html', {
         'form': form,
         'files': files,
         'revisions': revisions,
+        'project': project
     })
 
 def revisions(request):
