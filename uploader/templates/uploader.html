@@ -15,17 +15,16 @@
                 {% endfor %}
             {% endif %}
             {% if projects|length > 1 %}
-                  <form action="/uploader/get_project" method="post">
-                      {% csrf_token %}
-                      <select name="project" class="form-control" name=""  onchange="this.form.submit()">
-                          <option value=""></option>
-                          {% for p in projects %}
-                              <option value="{{ p.id }}">{{ p.name }}</option>
-                          {% endfor %}
-                      </select>
-                  </form>
+                <form action="/uploader/get_project" method="post">
+                    {% csrf_token %}
+                    <select name="project" class="form-control" name=""  onchange="this.form.submit()">
+                        <option value=""></option>
+                        {% for p in projects %}
+                            <option value="{{ p.id }}">{{ p.name }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
             {% endif %}
-
             {% if not selected_project %}
                 <h3>No project selected</h3>
                 <div class="well">
@@ -57,19 +56,21 @@
                     </form>
                 </div>
                 <h2>Files Uploaded</h2>
-                <div class="row">
-                    <div class="col-lg-2">
-                        <form action="/uploader/{{selected_project}}/get_revision" method="post">
-                            {% csrf_token %}
-                            <select name="revision" class="form-control" onchange="this.form.submit()">
-                                <option value=""></option>
-                                {% for r in revisions %}
-                                    <option value="{{r}}">Revision {{r}}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
-                    </div>
                 <div class="well">
+                    <div class="row">
+                        <div class="col-md-4 pull-right">
+                            <form class="pull-right form-inline" action="/uploader/{{selected_project}}/get_revision" method="post">
+                                {% csrf_token %}
+                                <label for="">Revision</label>
+                                <select name="revision" style="width:150px;" class="form-control" onchange="this.form.submit()">
+                                    <option value="">All</option>
+                                    {% for r in revisions %}
+                                        <option {% if r == revision %}selected="selected"{% endif %} value="{{r}}">Revision {{r}}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
