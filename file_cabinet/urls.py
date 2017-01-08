@@ -21,8 +21,9 @@ from django.conf import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', uploader_views.login_view, name='login'),
-    url(r'^filecabinet/$', uploader_views.uploader, name='uploader'),
-    url(r'^filecabinet/(?P<project>[0-9]+)/$', uploader_views.uploader, name='uploader'),
-    url(r'^revisions/$', uploader_views.revisions, name='revisions'),
-    url(r'^projects/$', uploader_views.projects, name='projects'),
+    url(r'^uploader/$', uploader_views.uploader, name='uploader'),
+    url(r'^uploader/(?P<project>[0-9]+)$', uploader_views.uploader, name='uploader'),
+    url(r'^uploader/(?P<project>[0-9]+)/(?P<revision>[0-9]+)$', uploader_views.uploader, name='uploader'),
+    url(r'^uploader/get_project$', uploader_views.get_project, name='get_project'),
+    url(r'^uploader/(?P<project>[0-9]+)/get_revision$', uploader_views.get_revision, name='get_revision'),
 ]  + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
