@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from uploader.models import UploadedFile, Project
 from uploader.forms import UploadedFileForm
@@ -25,6 +26,12 @@ def uploader(request, project=None, revision=None):
             uploaded_file.project_id = project
             uploaded_file.user_id = request.user.id
             uploaded_file.save()
+            file_name = uploaded_file.name if uploaded_file.name else uploaded_file.file
+            #if uploaded_file.name:
+            #    file_name = uploaded_file.name
+            messages.success(
+                request, '%s has been successfully uploaded.' % file_name
+                )
             return redirect('/uploader/'+project)
 
     user_groups = request.user.groups.all()
@@ -35,11 +42,11 @@ def uploader(request, project=None, revision=None):
             user=request.user,
             project_id=project
         )
+        revisions = list(set([f.revision for f in project_files]))
         if revision:
             project_files = project_files.filter(
                 revision=revision
             )
-        revisions = list(set([f.revision for f in project_files]))
         return render(request, 'uploader.html', {
             'selected_project': project,
             'projects': projects,
@@ -47,7 +54,7 @@ def uploader(request, project=None, revision=None):
             'project_files': project_files,
             'revisions': revisions
         })
-    
+
     return render(request, 'uploader.html', {
         'selected_project': project,
         'projects': projects
