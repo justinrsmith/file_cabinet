@@ -16,6 +16,7 @@ class UploadedFile(models.Model):
     name = models.CharField(max_length=20, blank=True) #TODO:need both blank and null?
     revision = models.IntegerField() #TODO: ???
     project = models.ForeignKey(Project)
+    note = models.CharField(max_length=256, blank=True)
     datetime = models.DateTimeField(default=timezone.now())
     user = models.ForeignKey(User)
 

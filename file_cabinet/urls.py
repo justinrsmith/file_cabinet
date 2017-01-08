@@ -19,11 +19,10 @@ from uploader import views as uploader_views
 from django.conf import settings
 
 urlpatterns = [
-
     url(r'^admin/', admin.site.urls),
-    url(r'^login/$', uploader_views.login_view, name='login'),
-    url(r'^$', uploader_views.uploader, name='uploader'),
-    url(r'^(?P<project>[0-9]+)/$', uploader_views.uploader, name='uploader'),
+    url(r'^$', uploader_views.login_view, name='login'),
+    url(r'^filecabinet/$', uploader_views.uploader, name='uploader'),
+    url(r'^filecabinet/(?P<project>[0-9]+)/$', uploader_views.uploader, name='uploader'),
     url(r'^revisions/$', uploader_views.revisions, name='revisions'),
     url(r'^projects/$', uploader_views.projects, name='projects'),
 ]  + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

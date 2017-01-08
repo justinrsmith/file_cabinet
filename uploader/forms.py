@@ -4,7 +4,7 @@ from uploader.models import UploadedFile
 class UploadedFileForm(ModelForm):
     class Meta:
         model = UploadedFile
-        fields = ['revision', 'name', 'file']
+        fields = ['revision', 'name', 'file', 'note']
         label = {
             'file': 'Select File'
         }

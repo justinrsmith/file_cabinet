@@ -16,13 +16,17 @@
                   {{ form.revision }}
               </div>
               <div class="form-group">
+                  <label for="InputFile">{{ form.file.label }}</label>
+                  {{ form.file }}
+                  <p class="help-block"><strong>Accepted File Types:</strong> jpeg,.png,.zip,.psd</p>
+              </div>
+              <div class="form-group">
                   <label for="">File Name (optional)</label>
                   {{ form.name }}
               </div>
               <div class="form-group">
-                  <label for="InputFile">{{ form.file.label }}</label>
-                  {{ form.file }}
-                  <p class="help-block"><strong>Accepted File Types:</strong> jpeg,.png,.zip,.psd</p>
+                  <label for="">Notes (optional)</label>
+                  {{ form.note }}<!--256 characters max-->
               </div>
               <input type="submit" class="btn btn-primary" value="Upload" />
           </form>
@@ -53,6 +57,7 @@
                           <th>Revision</th>
                           <th>File Type</th>
                           <th>Date Uploaded</th>
+                          <th>Note</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -62,6 +67,7 @@
                               <td>{{ f.revision }}</td>
                               <td>{{ f.extension }}</td>
                               <td>{{ f.datetime }}</td>
+                              <th>{{ f.note }}</th>
                           </tr>
                       {% endfor %}
                   </tbody>
