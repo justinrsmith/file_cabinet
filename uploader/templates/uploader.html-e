@@ -10,7 +10,7 @@
     <body>
         {% if projects|length > 1 %}
             <div class="container">
-                  <form action="get_project" method="post">
+                  <form action="/uploader/get_project" method="post">
                       {% csrf_token %}
                       <select name="project" class="form-control" name=""  onchange="this.form.submit()">
                           <option value=""></option>
