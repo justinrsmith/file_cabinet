@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 
-
-from uploader.forms import UploadedFileForm
 from uploader.models import UploadedFile, Project
+from uploader.forms import UploadedFileForm
 
 def login_view(request):
     if request.method == 'POST':
@@ -15,26 +12,11 @@ def login_view(request):
         user = authenticate(username=username, password=password)
         if user and user.is_active:
             login(request, user)
-            return redirect('/projects')
+            return redirect('/uploader')
     return render(request, 'login.html')
 
-def projects(request):
-    if request.method == 'POST':
-        return redirect('/filecabinet/'+request.POST['project'])
-    groups = request.user.groups.all()
-    projects = Project.objects.filter(group__in=groups)
-    return render(request, 'projects.html', {
-        'projects': projects
-    })
-
 @login_required
-# Create your views here.
-def uploader(request, project=None):
-    form = UploadedFileForm()
-    files = UploadedFile.objects.filter(user=request.user, project=project)
-    revisions = [f.revision for f in files]
-    revisions = list(set(revisions))
-
+def uploader(request, project=None, revision=None):
     if request.method == 'POST':
         #TODO: request.FILES?
         form = UploadedFileForm(request.POST, request.FILES)
@@ -43,24 +25,38 @@ def uploader(request, project=None):
             uploaded_file.project_id = project
             uploaded_file.user_id = request.user.id
             uploaded_file.save()
-            return redirect('/filecabinet/'+project)
+            return redirect('/uploader/'+project)
 
-    return render(request, 'dashboard.html', {
-        'form': form,
-        'files': files,
-        'revisions': revisions,
-        'project': project
+    user_groups = request.user.groups.all()
+    projects = Project.objects.filter(group__in=user_groups)
+    if project:
+        form = UploadedFileForm()
+        project_files = UploadedFile.objects.filter(
+            user=request.user,
+            project_id=project
+        )
+        if revision:
+            project_files = project_files.filter(
+                revision=revision
+            )
+        revisions = list(set([f.revision for f in project_files]))
+        return render(request, 'uploader.html', {
+            'selected_project': project,
+            'projects': projects,
+            'form': form,
+            'project_files': project_files,
+            'revisions': revisions
+        })
+    
+    return render(request, 'uploader.html', {
+        'selected_project': project,
+        'projects': projects
     })
 
-def revisions(request):
-    files = UploadedFile.objects.all()
-    revisions = [f.revision for f in files]
-    revisions = list(set(revisions))
-    form = UploadedFileForm()
-    files = UploadedFile.objects.filter(revision=request.POST['revision'])
+def get_project(request):
+    project = request.POST['project']
+    return redirect('/uploader/'+project)
 
-    return render(request, 'dashboard.html', {
-        'form': form,
-        'files': files,
-        'revisions': revisions,
-    })
+def get_revision(request, project):
+    revision = request.POST['revision']
+    return redirect('/uploader/'+project+'/'+revision)
