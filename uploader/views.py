@@ -47,12 +47,15 @@ def uploader(request, project=None, revision=None):
             project_files = project_files.filter(
                 revision=revision
             )
+            revision = int(revision)
+            
         return render(request, 'uploader.html', {
             'selected_project': project,
             'projects': projects,
             'form': form,
             'project_files': project_files,
-            'revisions': revisions
+            'revisions': revisions,
+            'revision': revision
         })
 
     return render(request, 'uploader.html', {
