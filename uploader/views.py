@@ -38,6 +38,7 @@ def uploader(request, project=None, revision=None):
     projects = Project.objects.filter(group__in=user_groups)
     if project:
         form = UploadedFileForm()
+        project = Project.objects.get(pk=project)
         project_files = UploadedFile.objects.filter(
             user=request.user,
             project_id=project
@@ -48,9 +49,8 @@ def uploader(request, project=None, revision=None):
                 revision=revision
             )
             revision = int(revision)
-            
         return render(request, 'uploader.html', {
-            'selected_project': project,
+            'project': project,
             'projects': projects,
             'form': form,
             'project_files': project_files,
