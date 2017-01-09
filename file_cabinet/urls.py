@@ -21,6 +21,7 @@ from django.conf import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', uploader_views.login_view, name='login'),
+    url(r'^logout/$', uploader_views.logout_view, name='logout'),
     url(r'^uploader/$', uploader_views.uploader, name='uploader'),
     url(r'^uploader/(?P<project>[0-9]+)$', uploader_views.uploader, name='uploader'),
     url(r'^uploader/(?P<project>[0-9]+)/(?P<revision>[0-9]+)$', uploader_views.uploader, name='uploader'),
