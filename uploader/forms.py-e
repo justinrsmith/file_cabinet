@@ -12,6 +12,8 @@ ALLOWED_EXTENSIONS = [
     'py',
 ]
 
+MAX_UPLOAD_SIZE = 5242880
+
 class UploadedFileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UploadedFileForm, self).__init__(*args, **kwargs)
@@ -27,7 +29,7 @@ class UploadedFileForm(forms.ModelForm):
 
     def clean_revision(self):
         revision = self.cleaned_data.get('revision')
-        if revision < 1:
+        if revision > MAX_UPLOAD_SIZE:
             raise forms.ValidationError('Revision must be a number greater than zero.')
         return revision
 
@@ -36,7 +38,8 @@ class UploadedFileForm(forms.ModelForm):
         name, ext = file.name.split('.')
         if ext not in ALLOWED_EXTENSIONS:
             raise forms.ValidationError('%s is not an allowed file type.' % ext)
-        return file
+        elif file.size > MAX_UPLOAD_SIZE:
+            raise forms.ValidationError('%s is greater than 50mb.' % ext)
 
     class Meta:
         model = UploadedFile
