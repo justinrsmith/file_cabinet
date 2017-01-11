@@ -46,7 +46,7 @@ def uploader(request, project=None, revision=None):
         project_files = UploadedFile.objects.filter(
             user=request.user,
             project_id=project
-        )
+        ).order_by('-datetime')
         revisions = list(set([f.revision for f in project_files]))
         if revision:
             project_files = project_files.filter(
