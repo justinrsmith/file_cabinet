@@ -15,13 +15,11 @@
         <!-- /END Scott Added Navigation -->
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    {% if not project %}
-                        <h3 class="title-header">No project selected</h3>
-                    {% else %}
-                        <h3 class="title-header">{{ project.name }}</h3>
-                    {% endif %}
-                </div>
+                {% if not project %}
+                    <h3 class="title-header">No project selected</h3>
+                {% else %}
+                    <h3 class="title-header">{{ project.name }}</h3>
+                {% endif %}
             </div>
             {% if not project %}
                 <div class="well">
@@ -44,13 +42,16 @@
                             <form method="post" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
                                 {% for field in form %}
+                                    {% if forloop.counter == 3 %}
+                                        <h4>Additional Information</h4>
+                                    {% endif %}
                                     <div class="form-group {% if field.errors %}has-error{% endif %}">
                                         <div class="row">
                                             <label class="col-sm-2 control-label" for="">{{ field.label }}</label>
                                             <div class="col-sm-6">
                                                 {{ field }}
                                                 {% if field.name == 'file' %}
-                                                    <p class="help-block"><strong>Accepted File Types:</strong> jpg/jpeg, png, zip, psd, xlsx, cvs, py</p>
+                                                    <p class="help-block"><strong>Accepted File Types:</strong> jpg/jpeg, png, zip, psd, xlsx, csv, py</p>
                                                 {% endif %}
                                             </div>
                                             {% if field.errors %}
@@ -70,7 +71,7 @@
                                     {% for f in project_files %}
                                         {% if forloop.counter <= 15 %}
                                         <tr>
-                                            <td><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.readable_file_name }}{% endif %}{{f.revision}}</a></td>
+                                            <td><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.readable_file_name }}{% endif %}</a></td>
                                         </tr>
                                         {% endif %}
                                     {% endfor %}

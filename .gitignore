@@ -5,3 +5,4 @@ media/
 venv/
 uploader/*.pyc
 *.pyc
+uploader/migrations/__pycache__/
