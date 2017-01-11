@@ -22,6 +22,7 @@ def logout_view(request):
 
 @login_required
 def uploader(request, project=None, revision=None):
+    form = UploadedFileForm()
     if request.method == 'POST':
         #TODO: request.FILES?
         form = UploadedFileForm(request.POST, request.FILES)
@@ -41,7 +42,6 @@ def uploader(request, project=None, revision=None):
     user_groups = request.user.groups.all()
     projects = Project.objects.filter(group__in=user_groups)
     if project:
-        form = UploadedFileForm()
         project = Project.objects.get(pk=project)
         project_files = UploadedFile.objects.filter(
             user=request.user,
