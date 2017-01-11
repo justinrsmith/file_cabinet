@@ -32,10 +32,8 @@ def uploader(request, project=None, revision=None):
             uploaded_file.user_id = request.user.id
             uploaded_file.save()
             file_name = uploaded_file.name if uploaded_file.name else uploaded_file.file
-            #if uploaded_file.name:
-            #    file_name = uploaded_file.name
             messages.success(
-                request, '%s has been successfully uploaded.' % file_name
+                request, '%s has been successfully uploaded.' % uploaded_file.readable_file_name()
                 )
             return redirect('/uploader/'+project)
 
@@ -51,7 +49,7 @@ def uploader(request, project=None, revision=None):
         if revision:
             project_files = project_files.filter(
                 revision=revision
-            )
+            ).order_by('-datetime')
             revision = int(revision)
         return render(request, 'uploader.html', {
             'project': project,

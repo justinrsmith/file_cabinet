@@ -17,7 +17,10 @@ MAX_UPLOAD_SIZE = 5242880
 class UploadedFileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UploadedFileForm, self).__init__(*args, **kwargs)
-        self.fields['revision'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['revision'].widget.attrs.update({
+            'class' : 'form-control',
+            'style': 'width:25%;'
+        })
         self.fields['name'].widget.attrs.update({'class' : 'form-control'})
         self.fields['note'].widget.attrs.update({'class' : 'form-control'})
 
@@ -51,7 +54,7 @@ class UploadedFileForm(forms.ModelForm):
 
     class Meta:
         model = UploadedFile
-        fields = ['revision', 'name', 'file', 'note']
+        fields = ['file', 'revision', 'name',  'note']
         label = {
             'file': 'Select File'
         }
