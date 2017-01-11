@@ -41,7 +41,6 @@
                     {% endif %}
                     <form method="post" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
-
                         <div class="form-group {% if form.file.errors %}has-error{% endif %}">
                             <div class="row">
                                 <label class="col-sm-2 control-label" for="">{{ form.file.label }}</label>
