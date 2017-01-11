@@ -5,7 +5,7 @@ from django.contrib.auth.models import User,Group
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/<username>/<filename>
-    return '{0}/{1}'.format(instance.user.username, filename)
+    return '{0}/{1}/{2}'.format(instance.user.username, instance.project, filename)
 
 class Project(models.Model):
     name = models.CharField(max_length=20)
@@ -21,11 +21,11 @@ class UploadedFile(models.Model):
     revision = models.IntegerField() #TODO: ???
     project = models.ForeignKey(Project)
     note = models.CharField(max_length=256, blank=True)
-    datetime = models.DateTimeField(default=timezone.now())
+    datetime = models.DateTimeField()
     user = models.ForeignKey(User)
 
     def readable_file_name(self):
-        return str(self.file).split('/')[1]
+        return str(self.file).split('/')[2]
 
     def extension(self):
         name, extension = os.path.splitext(self.file.name)

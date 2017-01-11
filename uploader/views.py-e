@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -30,6 +32,7 @@ def uploader(request, project=None, revision=None):
             uploaded_file = form.save(commit=False)
             uploaded_file.project_id = project
             uploaded_file.user_id = request.user.id
+            uploaded_file.datetime = datetime.now()
             uploaded_file.save()
             file_name = uploaded_file.name if uploaded_file.name else uploaded_file.file
             messages.success(
