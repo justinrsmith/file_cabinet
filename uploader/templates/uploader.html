@@ -76,7 +76,7 @@
                 </div>
                 <div class="col-md-offset-3 col-md-3">
                     {% if projects|length > 1 %}
-                        <form action="/uploader/get_project" method="post">
+                        <form action="/uploader/get_project/" method="post">
                             {% csrf_token %}
                             <select name="project" class="form-control" name=""  onchange="this.form.submit()">
                                 <option value=""></option>
@@ -112,7 +112,7 @@
                                 <label class="col-sm-2 control-label" for="">{{ form.file.label }}</label>
                                 <div class="col-sm-3">
                                     {{ form.file }}
-                                    <p class="help-block"><strong>Accepted File Types:</strong> jpg/jpeg, png, zip, psd, xlsx, cvs</p>
+                                    <p class="help-block"><strong>Accepted File Types:</strong> jpg/jpeg, png, zip, psd, xlsx, cvs, py</p>
                                 </div>
                                 {% if form.file.errors %}
                                     <span class="help-block">{{ form.file.errors.as_text }}</span>
@@ -154,7 +154,7 @@
                 <div class="well">
                     <div class="row">
                         <div class="col-md-4 pull-right">
-                            <form class="pull-right form-inline" action="/uploader/{{ project.id }}/get_revision" method="post">
+                            <form class="pull-right form-inline" action="/uploader/{{ project.id }}/get_revision/" method="post">
                                 {% csrf_token %}
                                 <label for="">Revision</label>
                                 <select name="revision" style="width:150px;" class="form-control" onchange="this.form.submit()">

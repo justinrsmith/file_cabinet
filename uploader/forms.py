@@ -9,6 +9,7 @@ ALLOWED_EXTENSIONS = [
     'psd',
     'xlsx',
     'csv',
+    'py',
 ]
 
 class UploadedFileForm(forms.ModelForm):
