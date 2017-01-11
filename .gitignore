@@ -3,3 +3,5 @@ file_cabinet/__pycache__/
 uploader/__pycache__/
 media/
 venv/
+uploader/*.pyc
+*.pyc
