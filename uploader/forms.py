@@ -22,14 +22,16 @@ class UploadedFileForm(forms.ModelForm):
         self.fields['note'].widget.attrs.update({'class' : 'form-control'})
 
     def clean(self):
-        if not self.cleaned_data.get('revision', None):
+        data = self.cleaned_data
+        if not data.get('revision', None):
             raise forms.ValidationError('Please fill out all of the required fields below.')
-        elif not self.cleaned_data.get('file', None):
+        elif not data.get('file', None):
+            print('elif')
             raise forms.ValidationError('Please fill out all of the required fields below.')
 
     def clean_revision(self):
         revision = self.cleaned_data.get('revision')
-        if revision > MAX_UPLOAD_SIZE:
+        if revision< 1:
             raise forms.ValidationError('Revision must be a number greater than zero.')
         return revision
 
@@ -40,6 +42,7 @@ class UploadedFileForm(forms.ModelForm):
             raise forms.ValidationError('%s is not an allowed file type.' % ext)
         elif file.size > MAX_UPLOAD_SIZE:
             raise forms.ValidationError('%s is greater than 50mb.' % ext)
+        return file
 
     class Meta:
         model = UploadedFile
