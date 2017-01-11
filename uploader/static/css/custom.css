@@ -44,3 +44,11 @@ body {
 .title-header {
   margin-top: 0px;
 }
+
+#recent_form {
+    padding-right: 0px;
+}
+
+#upload_form {
+    padding-left: 0px;
+}

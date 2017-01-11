@@ -23,16 +23,18 @@
                     <th>File Type</th>
                     <th>Date Uploaded</th>
                     <th>Note</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {% for f in project_files %}
                     <tr>
-                        <td><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.file.name }}{% endif %}{{f.revision}}</a></td>
+                        <td><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.readable_file_name }}{% endif %}</a></td>
                         <td>{{ f.revision }}</td>
                         <td>{{ f.extension }}</td>
                         <td>{{ f.datetime }}</td>
-                        <th>{{ f.note }}</th>
+                        <td>{{ f.note }}</td>
+                        <td class><button type="button" name="button" class="btn btn-danger">Delete File</button></td>
                     </tr>
                 {% endfor %}
             </tbody>
