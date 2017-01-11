@@ -36,7 +36,7 @@ class UploadedFileForm(forms.ModelForm):
 
     def clean_revision(self):
         revision = self.cleaned_data.get('revision')
-        if revision < MAX_UPLOAD_SIZE:
+        if revision < 1:
             raise forms.ValidationError('Revision must be a number greater than zero.')
         return revision
 
