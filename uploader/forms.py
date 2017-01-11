@@ -23,15 +23,20 @@ class UploadedFileForm(forms.ModelForm):
 
     def clean(self):
         data = self.cleaned_data
-        if not data.get('revision', None):
+        # If user provides a file but a poor revision number
+        if not data.get('revision', None) and data.get('file', None):
+            raise forms.ValidationError('Please fix the errors below.')
+        # If user provides a revision but a file that errors
+        elif data.get('revision', None) and not data.get('file', None):
+            raise forms.ValidationError('Please fix the errors below.')
+        elif not data.get('revision', None):
             raise forms.ValidationError('Please fill out all of the required fields below.')
         elif not data.get('file', None):
-            print('elif')
             raise forms.ValidationError('Please fill out all of the required fields below.')
 
     def clean_revision(self):
         revision = self.cleaned_data.get('revision')
-        if revision< 1:
+        if revision < MAX_UPLOAD_SIZE:
             raise forms.ValidationError('Revision must be a number greater than zero.')
         return revision
 
