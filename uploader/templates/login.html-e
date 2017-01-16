@@ -15,7 +15,6 @@
   </head>
 
   <body>
-
     <form method="post" action="/" class="form-signin">
         {% csrf_token %}
         <h2 class="form-signin-heading">File Cabinet Login</h2>
@@ -30,9 +29,9 @@
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
       </form>
-
+      <div class="text-center">
+          <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+      </div>
     </div> <!-- /container -->
-
-
   </body>
 </html>

@@ -75,3 +75,7 @@ def get_project(request):
 def get_revision(request, project):
     revision = request.POST['revision']
     return redirect('/uploader/'+project+'/'+revision)
+
+def delete_file(request, project, file):
+    UploadedFile.objects.get(pk=file).delete()
+    return redirect('/uploader/'+project+'/')
