@@ -21,8 +21,10 @@
                     <th>File Name</th>
                     <th>Revision</th>
                     <th>File Type</th>
-                    <th>Date Uploaded</th>
+
                     <th>Note</th>
+                    <th>Date Uploaded</th>
+                    <th>Uploaded By</th>
                     <th></th>
                 </tr>
             </thead>
@@ -32,9 +34,11 @@
                         <td><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.readable_file_name }}{% endif %}</a></td>
                         <td>{{ f.revision }}</td>
                         <td>{{ f.extension }}</td>
-                        <td>{{ f.datetime }}</td>
+
                         <td>{{ f.note }}</td>
-                        <td class><button type="button" name="button" class="btn btn-danger">Delete File</button></td>
+                        <td>{{ f.datetime.date }}</td>
+                        <td>{{ f.user }}</td>
+                        <td class><a class="btn btn-danger" href="/uploader/delete/{{ project.id }}/{{ f.id }}/">Delete File</button></td>
                     </tr>
                 {% endfor %}
             </tbody>

@@ -13,18 +13,41 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, static
+from django.conf.urls import url, static, include
 from django.contrib import admin
 from uploader import views as uploader_views
 from django.conf import settings
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', uploader_views.login_view, name='login'),
+    # Authorization urls
+
+    #   Login
+    url(r'$', uploader_views.login_view, name='login'),
+    #  Logut
     url(r'^logout/$', uploader_views.logout_view, name='logout'),
+    #  Pasword reset email form (django built in)
+    url(r'password_reset/$',  auth_views.password_reset, name='password_reset'),
+    #  Pasword reset success/action notice (django built in)
+    url(r'password_reset_done/$',  auth_views.password_reset_done, name='password_reset_done'),
+    #  Pasword reset form (django built in)
+    url(r'reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',  auth_views.password_reset_confirm, name='password_reset_confirm'),
+    #  Change notice and return to login link
+    url(r'reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
+
+    # App urls
+
+    #  main app view
     url(r'^uploader/$', uploader_views.uploader, name='uploader'),
+    #  feed in project
     url(r'^uploader/(?P<project>[0-9]+)/$', uploader_views.uploader, name='uploader'),
+    #  feed in project and revision
     url(r'^uploader/(?P<project>[0-9]+)/(?P<revision>[0-9]+)/$', uploader_views.uploader, name='uploader'),
+    #  view to redirect to selected project (TODO)
     url(r'^uploader/get_project/$', uploader_views.get_project, name='get_project'),
+    #  view to redirect to selected project and revision for projects (TODO)
     url(r'^uploader/(?P<project>[0-9]+)/get_revision/$', uploader_views.get_revision, name='get_revision'),
+    #  view to delete seclected file (TODO)
+    url(r'^uploader/delete/(?P<project>[0-9]+)/(?P<file>[0-9]+)/$', uploader_views.delete_file, name='delete_file'),
 ]  + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

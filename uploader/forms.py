@@ -18,7 +18,7 @@ class UploadedFileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UploadedFileForm, self).__init__(*args, **kwargs)
         self.fields['revision'] .widget.attrs.update({
-            'class' : 'form-control',
+            'class': 'form-control',
             'style': 'width:25%;',
             'min': '0'
         })
