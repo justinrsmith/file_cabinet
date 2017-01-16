@@ -66,7 +66,7 @@ def uploader(request, project=None, revision=None):
     return render(request, 'uploader.html', {
         'selected_project': project,
         'projects': projects
-    })test
+    })
 
 def get_project(request):
     project = request.POST['project']
