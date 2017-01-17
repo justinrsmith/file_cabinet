@@ -1,5 +1,6 @@
 from django import forms
 from uploader.models import UploadedFile
+from django.contrib.auth.models import User
 
 ALLOWED_EXTENSIONS = [
     'jpg',
@@ -59,3 +60,36 @@ class UploadedFileForm(forms.ModelForm):
         label = {
             'file': 'Select File'
         }
+
+
+class EditProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['last_name'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['email'].widget.attrs.update({'class' : 'form-control'})
+
+    def clean(self):
+        data_keys = self.cleaned_data.keys()
+        if not 'first_name' in data_keys:
+            raise forms.ValidationError('All fields are required.')
+        elif not 'last_name' in data_keys:
+            raise forms.ValidationError('All fields are required.')
+        elif not 'email' in data_keys:
+            raise forms.ValidationError('All fields are required.')
+
+    def clean_first_name(self):
+        if not self.cleaned_data.get('first_name'):
+            raise forms.ValidationError('First name cannot be blank.')
+
+    def clean_last_name(self):
+        if not self.cleaned_data.get('last_name'):
+            raise forms.ValidationError('Last name cannot be blank.')
+
+    def clean_email(self):
+        if not self.cleaned_data.get('email'):
+            raise forms.ValidationError('Email cannot be blank.')
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
