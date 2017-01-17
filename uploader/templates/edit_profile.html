@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+<h1>Edit Profile</h1>
+{% block content %}
+    <div class="row">
+        <div class="class col-md-6 col-md-offset-3 well">
+            <h3 class="title-header">Update Profile</h3>
+            <br>
+            <form method="POST" action="/edit_profile/{{ project }}/" class="" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    {% for err in form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">{{ err }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% for field in form %}
+                    <div class="form-group {% if field.errors %}has-error{% endif %}">
+                        <div class="row">
+                            <label class="col-sm-4 control-label" for="">{{ field.label }}</label>
+                            <div class="col-sm-8">
+                                {{ field }}
+                                {% if field.errors %}
+                                    <span class="help-block">{{ field.errors.as_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <a class="btn btn-primary" href='{% if project %}/uploader/{{ project }}/{% else %}/uploader/{% endif %}'>Return to Uploader</a>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="pull-right btn btn-primary" type="submit">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from uploader.models import UploadedFile, Project
-from uploader.forms import UploadedFileForm
+from uploader.forms import UploadedFileForm, EditProfileForm
 
 def login_view(request):
     if request.method == 'POST':
@@ -39,7 +39,6 @@ def uploader(request, project=None, revision=None):
                 request, '%s has been successfully uploaded.' % uploaded_file.readable_file_name()
                 )
             return redirect('/uploader/'+project)
-
     user_groups = request.user.groups.all()
     projects = Project.objects.filter(group__in=user_groups)
     if project:
@@ -62,7 +61,6 @@ def uploader(request, project=None, revision=None):
             'revisions': revisions,
             'revision': revision
         })
-
     return render(request, 'uploader.html', {
         'selected_project': project,
         'projects': projects
@@ -75,6 +73,36 @@ def get_project(request):
 def get_revision(request, project):
     revision = request.POST['revision']
     return redirect('/uploader/'+project+'/'+revision)
+
+def edit_profile(request, project=None):
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            user.first_name = request.POST['first_name']
+            user.last_name = request.POST['last_name']
+            user.email = request.POST['email']
+            user.save()
+            messages.info(request, 'User profile has been updated.')
+            if project:
+                return redirect('/uploader/'+project)
+            return redirect('/uploader/')
+        return render(request, 'edit_profile.html', {
+            'user': request.user,
+            'form': form,
+            'project': project
+        })
+    data = {
+        'first_name': request.user.first_name,
+        'last_name': request.user.last_name,
+        'email': request.user.email
+    }
+    form = EditProfileForm(initial=data)
+    return render(request, 'edit_profile.html', {
+        'user': request.user,
+        'form': form,
+        'project': project
+    })
 
 def delete_file(request, project, file):
     UploadedFile.objects.get(pk=file).delete()

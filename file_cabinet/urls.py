@@ -24,9 +24,12 @@ urlpatterns = [
     # Authorization urls
 
     #   Login
-    url(r'$', uploader_views.login_view, name='login'),
+    url(r'^$', uploader_views.login_view, name='login'),
     #  Logut
     url(r'^logout/$', uploader_views.logout_view, name='logout'),
+    #  Edit profile
+    url(r'^edit_profile/$', uploader_views.edit_profile, name='edit_profile'),
+    url(r'^edit_profile/(?P<project>[0-9]+)/$', uploader_views.edit_profile, name='edit_profile'),
     #  Pasword reset email form (django built in)
     url(r'password_reset/$',  auth_views.password_reset, name='password_reset'),
     #  Pasword reset success/action notice (django built in)
