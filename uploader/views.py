@@ -6,17 +6,29 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from uploader.models import UploadedFile, Project
-from uploader.forms import UploadedFileForm, EditProfileForm
+from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm
 
 def login_view(request):
+    form = LoginForm()
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user and user.is_active:
-            login(request, user)
-            return redirect('/uploader')
-    return render(request, 'login.html')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return redirect('/uploader')
+                else:
+                    messages.error(
+                        request, ('No active user found for: %s.') % username
+                    )
+            else:
+                messages.error( request, 'Invalid username or password.')
+    return render(request, 'login.html', {
+        'form': form
+    })
 
 def logout_view(request):
     logout(request)
@@ -25,6 +37,12 @@ def logout_view(request):
 @login_required
 def uploader(request, project=None, revision=None):
     form = UploadedFileForm()
+    user_groups = request.user.groups.all()
+    projects = Project.objects.filter(group__in=user_groups)
+    # If only one project and project wasn't passed in redirect with the one
+    # project user has access too
+    if len(projects) == 1 and project is None:
+        return redirect('/uploader/'+str(projects.first().id))
     if request.method == 'POST':
         #TODO: request.FILES?
         form = UploadedFileForm(request.POST, request.FILES)
@@ -39,12 +57,9 @@ def uploader(request, project=None, revision=None):
                 request, '%s has been successfully uploaded.' % uploaded_file.readable_file_name()
                 )
             return redirect('/uploader/'+project)
-    user_groups = request.user.groups.all()
-    projects = Project.objects.filter(group__in=user_groups)
     if project:
         project = Project.objects.get(pk=project)
         project_files = UploadedFile.objects.filter(
-            user=request.user,
             project_id=project
         ).order_by('-datetime')
         revisions = list(set([f.revision for f in project_files]))
@@ -98,6 +113,7 @@ def edit_profile(request, project=None):
         'email': request.user.email
     }
     form = EditProfileForm(initial=data)
+
     return render(request, 'edit_profile.html', {
         'user': request.user,
         'form': form,

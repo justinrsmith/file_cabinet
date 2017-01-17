@@ -15,6 +15,18 @@ ALLOWED_EXTENSIONS = [
 
 MAX_UPLOAD_SIZE = 5242880
 
+class LoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Username'
+        }
+    ))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Password'
+        }
+    ))
+
 class UploadedFileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UploadedFileForm, self).__init__(*args, **kwargs)
