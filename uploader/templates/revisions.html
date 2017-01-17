@@ -38,7 +38,11 @@
                         <td>{{ f.note }}</td>
                         <td>{{ f.datetime.date }}</td>
                         <td>{{ f.user }}</td>
-                        <td class><a class="btn btn-danger" href="/uploader/delete/{{ project.id }}/{{ f.id }}/">Delete File</button></td>
+                        {% if request.user == f.user %}
+                            <td class><a class="btn btn-danger" href="/uploader/delete/{{ project.id }}/{{ f.id }}/">Delete File</button></td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>

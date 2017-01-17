@@ -21,9 +21,10 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    
     # Authorization urls
 
-    #   Login
+    #  Login
     url(r'^$', uploader_views.login_view, name='login'),
     #  Logut
     url(r'^logout/$', uploader_views.logout_view, name='logout'),
