@@ -5,7 +5,7 @@
         <div class="class col-md-6 col-md-offset-3 well">
             <h3 class="title-header">Update Profile</h3>
             <br>
-            <form method="POST" action="/edit_profile/{{ project }}/" class="" novalidate>
+            <form method="POST" action="{% if project %}/edit_profile/{{ project }}/{% else %}/edit_profile/{% endif %}" class="" novalidate>
                 {% csrf_token %}
                 {% if form.non_field_errors %}
                     {% for err in form.non_field_errors %}
