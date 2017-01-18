@@ -31,7 +31,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Hey <strong>{{ request.user.first_name }}</strong> <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a href="{% url 'password_reset' %}">Reset Password</a></li>
-                    <li><a href="{% if project %}/edit_profile/{{project.id}}/{% else %}/edit_profile{% endif %}">{{project}}Edit Info</a></li>
+                    <li><a href="{% if project %}/edit_profile/{{project.id}}/{% else %}/edit_profile{% endif %}">Update Profile</a></li>
                     <li class="divider"></li>
                     <li><a href="/logout">Log Out</a></li>
                 </ul>
