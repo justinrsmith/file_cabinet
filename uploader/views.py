@@ -26,6 +26,8 @@ def login_view(request):
                     )
             else:
                 messages.error( request, 'Invalid username or password.')
+    if request.user.is_authenticated():
+        return redirect('/uploader/')
     return render(request, 'login.html', {
         'form': form
     })

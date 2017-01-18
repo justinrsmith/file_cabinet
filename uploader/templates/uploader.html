@@ -13,19 +13,21 @@
                 {% endif %}
             </div>
             {% if not project %}
-                <div class="well">
-                    Please select a project above to continue.
+                <div class="row">
+                    <div class="well">
+                        Please select a project above to continue.
+                    </div>
                 </div>
             {% else %}
                 <div class="row">
-                    <div class="col-md-8" id="upload_form">
+                    <div class="col-xs-8" id="upload_form">
                         <div class="well">
                             {% if form.non_field_errors %}
                                 {% for err in form.non_field_errors %}
                                     <div class="alert alert-danger" role="alert">{{ err }}</div>
                                 {% endfor %}
                             {% endif %}
-                            <form method="post" enctype="multipart/form-data" novalidate>
+                            <form action='/uploader/{{ project.id }}/' method="post" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
                                 {% for field in form %}
                                     {% if forloop.counter == 3 %}
@@ -50,7 +52,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="col-md-4" id="recent_form">
+                    <div class="col-xs-4" id="recent_form">
                         <div class="well">
                             <h4>Recently Uploaded</h4>
                                 <table>
@@ -65,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="files_uploaded">
                     {% include 'revisions.html' %}
                 </div>
             {% endif %}
