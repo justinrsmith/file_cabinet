@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from uploader.models import UploadedFile, Project
-from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm
+from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm
 
 def login_view(request):
     form = LoginForm()
@@ -125,3 +125,18 @@ def edit_profile(request, project=None):
 def delete_file(request, project, file):
     UploadedFile.objects.get(pk=file).delete()
     return redirect('/uploader/'+project+'/')
+
+def add_project(request):
+    form = ProjectForm()
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            #TODO: fix
+            new_project = form.save(commit=False)
+            new_project.group_id = 1
+            new_project.save()
+            return redirect('/uploader/'+str(new_project.id))
+
+    return render(request, 'add_project.html', {
+        'form': form
+    })

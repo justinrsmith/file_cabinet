@@ -6,3 +6,4 @@ venv/
 uploader/*.pyc
 *.pyc
 uploader/migrations/__pycache__/
+file_cabinet/*.pyc
