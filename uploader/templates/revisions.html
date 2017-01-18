@@ -1,8 +1,8 @@
-<h3 class="title-header">Files Uploaded</h3>
 <div class="well">
+    <h3 class="title-header">Files Uploaded</h3>
     <div class="row">
-        <div class="col-md-4 pull-right">
-            <form class="pull-right form-inline" action="/uploader/{{ project.id }}/get_revision/" method="post">
+        <div class="col-xs-4 pull-right">
+            <form class="pull-right form-inline" action="/uploader/{{ project.id }}/get_revision/#files_uploaded" method="post">
                 {% csrf_token %}
                 <label for="">Revision</label>
                 <select name="revision" style="width:150px;" class="form-control" onchange="this.form.submit()">
@@ -14,38 +14,42 @@
             </form>
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>File Name</th>
-                    <th>Revision</th>
-                    <th>File Type</th>
+    <div class="row">
+        <div class="table-responsive">
+            <div class="col-xs-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Revision</th>
+                            <th>File Type</th>
+                            <th>Note</th>
+                            <th>Date Uploaded</th>
+                            <th>Uploaded By</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in project_files %}
+                            <tr>
+                                <td><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.readable_file_name }}{% endif %}</a></td>
+                                <td>{{ f.revision }}</td>
+                                <td>{{ f.extension }}</td>
+                                <td class="wrap-td">{{ f.note }}</td>
+                                <td>{{ f.datetime.date }}</td>
+                                <td>{{ f.user }}</td>
+                                {% if request.user == f.user %}
+                                    <td class><a class="btn btn-danger" href="/uploader/delete/{{ project.id }}/{{ f.id }}/">Delete File</button></td>
+                                {% else %}
+                                    <td></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-                    <th>Note</th>
-                    <th>Date Uploaded</th>
-                    <th>Uploaded By</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for f in project_files %}
-                    <tr>
-                        <td><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.readable_file_name }}{% endif %}</a></td>
-                        <td>{{ f.revision }}</td>
-                        <td>{{ f.extension }}</td>
-
-                        <td>{{ f.note }}</td>
-                        <td>{{ f.datetime.date }}</td>
-                        <td>{{ f.user }}</td>
-                        {% if request.user == f.user %}
-                            <td class><a class="btn btn-danger" href="/uploader/delete/{{ project.id }}/{{ f.id }}/">Delete File</button></td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        </div>
     </div>
+
 </div>

@@ -66,6 +66,7 @@ class UploadedFileForm(forms.ModelForm):
             raise forms.ValidationError('%s is greater than 50mb.' % ext)
         return file
 
+
     class Meta:
         model = UploadedFile
         fields = ['file', 'revision', 'name',  'note']
