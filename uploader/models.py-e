@@ -10,8 +10,10 @@ def user_directory_path(instance, filename):
     return '{0}/{1}/{2}'.format(instance.user.username, instance.project, filename)
 
 class Project(models.Model):
-    name  = models.CharField(max_length=20)
-    group = models.ForeignKey(Group)
+    name        = models.CharField(max_length=20, unique=True)
+    description = models.TextField(max_length=100, blank=True)
+    #TODO: users instead of group
+    group       = models.ForeignKey(Group)
 
     def __str__(self):
         return self.name

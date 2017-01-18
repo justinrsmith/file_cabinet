@@ -1,5 +1,5 @@
 from django import forms
-from uploader.models import UploadedFile
+from uploader.models import UploadedFile, Project
 from django.contrib.auth.models import User
 
 ALLOWED_EXTENSIONS = [
@@ -106,3 +106,17 @@ class EditProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
+
+
+class ProjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['description'].widget.attrs.update({'class' : 'form-control'})
+
+    class Meta:
+        model = Project
+        fields = ['name', 'description']
+        widgets = {
+          'description': forms.Textarea(attrs={'rows':4, 'cols':15}),
+        }

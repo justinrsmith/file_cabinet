@@ -12,19 +12,17 @@
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <div class="col-xs-4">
-            {% if projects|length > 1 %}
+            <div class="col-xs-9">
                 <form class="navbar-form" action="/uploader/get_project/" method="post">
                     {% csrf_token %}
-                    <label for="">Project</label>
-                    <select name="project" class="form-control" name=""  onchange="this.form.submit()">
+                    <select {% if projects|length <= 1 %} disabled {% endif %} name="project" class="form-control" id="select_project" onchange="this.form.submit()">
                         <option value="">Select a project</option>
                         {% for p in projects %}
                             <option {% if p == project %}selected="selected"{% endif %} value="{{ p.id }}">{{ p.name }}</option>
                         {% endfor %}
                     </select>
+                    <a href="/uploader/add_project/" class="btn btn-default">Add Project</a>
                 </form>
-            {% endif %}
             </div>
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">

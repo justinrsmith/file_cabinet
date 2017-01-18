@@ -21,7 +21,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    
+
     # Authorization urls
 
     #  Login
@@ -54,4 +54,6 @@ urlpatterns = [
     url(r'^uploader/(?P<project>[0-9]+)/get_revision/$', uploader_views.get_revision, name='get_revision'),
     #  view to delete seclected file (TODO)
     url(r'^uploader/delete/(?P<project>[0-9]+)/(?P<file>[0-9]+)/$', uploader_views.delete_file, name='delete_file'),
+    #  add a project
+    url(r'^uploader/add_project/', uploader_views.add_project, name='add_project')
 ]  + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

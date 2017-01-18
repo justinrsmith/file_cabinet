@@ -58,3 +58,41 @@ body {
     min-width: 160px;
     max-width: 160px;
 }
+
+#main {
+    margin-left: 0px;
+}
+
+#select_project {
+    width: 200px;
+}
+
+.navbar {
+    background-color: #1abc9c;
+    color: white;
+}
+
+.navbar-default .navbar-brand {
+    color: white;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: white;
+}
+
+.file_cab_btn {
+    background-color: #16a085;
+    border-color: #16a085;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #16a085;
+}
+
+.well {
+    background-color: white;
+}
+
+body {
+    background-color: #ecf0f1;
+}

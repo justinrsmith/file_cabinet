@@ -6,22 +6,19 @@
                             <div class="main-alert alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
                     {% endfor %}
                 {% endif %}
-                {% if not project %}
-                    <h3 class="title-header">No project selected</h3>
-                {% else %}
-                    <h3 class="title-header">{{ project.name }}</h3>
-                {% endif %}
             </div>
             {% if not project %}
                 <div class="row">
                     <div class="well">
-                        Please select a project above to continue.
+                        <h3 class="title-header">{{ project.name }}</h3>
+                        Please select or create a project above to continue.
                     </div>
                 </div>
             {% else %}
                 <div class="row">
                     <div class="col-xs-8" id="upload_form">
                         <div class="well">
+                            <h3 class="title-header">{{ project.name }}</h3>
                             {% if form.non_field_errors %}
                                 {% for err in form.non_field_errors %}
                                     <div class="alert alert-danger" role="alert">{{ err }}</div>
@@ -35,8 +32,8 @@
                                     {% endif %}
                                     <div class="form-group {% if field.errors %}has-error{% endif %}">
                                         <div class="row">
-                                            <label class="col-sm-2 control-label" for="">{{ field.label }}</label>
-                                            <div class="col-sm-6">
+                                            <label class="col-xs-2 control-label" for="">{{ field.label }}</label>
+                                            <div class="col-xs-6">
                                                 {{ field }}
                                                 {% if field.name == 'file' %}
                                                     <p class="help-block"><strong>Accepted File Types:</strong> jpg/jpeg, png, zip, psd, xlsx, csv, py</p>
@@ -48,7 +45,7 @@
                                         </div>
                                     </div>
                                 {% endfor %}
-                                <input type="submit" class="btn btn-primary" value="Upload" />
+                                <input type="submit" class="btn btn-primary file_cab_btn" value="Upload" />
                             </form>
                         </div>
                     </div>
