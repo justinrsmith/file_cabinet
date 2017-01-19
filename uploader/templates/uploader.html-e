@@ -33,15 +33,16 @@
                                     <div class="form-group {% if field.errors %}has-error{% endif %}">
                                         <div class="row">
                                             <label class="col-xs-2 control-label" for="">{{ field.label }}</label>
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-7">
                                                 {{ field }}
                                                 {% if field.name == 'file' %}
                                                     <p class="help-block"><strong>Accepted File Types:</strong> jpg/jpeg, png, zip, psd, xlsx, csv, py</p>
                                                 {% endif %}
+                                                {% if field.errors %}
+                                                    <span class="help-block">{{ field.errors.as_text }}</span>
+                                                {% endif %}
                                             </div>
-                                            {% if field.errors %}
-                                                <span class="help-block">{{ field.errors.as_text }}</span>
-                                            {% endif %}
+
                                         </div>
                                     </div>
                                 {% endfor %}

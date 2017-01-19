@@ -39,8 +39,7 @@ def logout_view(request):
 @login_required
 def uploader(request, project=None, revision=None):
     form = UploadedFileForm()
-    user_groups = request.user.groups.all()
-    projects = Project.objects.filter(group__in=user_groups)
+    projects = Project.objects.filter(users=request.user)
     # If only one project and project wasn't passed in redirect with the one
     # project user has access too
     if len(projects) == 1 and project is None:

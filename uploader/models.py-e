@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import User
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/<username>/<filename>
@@ -12,8 +12,7 @@ def user_directory_path(instance, filename):
 class Project(models.Model):
     name        = models.CharField(max_length=20, unique=True)
     description = models.TextField(max_length=100, blank=True)
-    #TODO: users instead of group
-    group       = models.ForeignKey(Group)
+    users       = models.ManyToManyField(User)
 
     def __str__(self):
         return self.name
