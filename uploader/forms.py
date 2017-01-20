@@ -15,6 +15,45 @@ ALLOWED_EXTENSIONS = [
 
 MAX_UPLOAD_SIZE = 5242880
 
+class RegistrationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        for f in self.fields:
+            self.fields[f].widget.attrs.update({'class' : 'form-control'})
+    password = forms.CharField(widget=forms.PasswordInput)
+    password_confirm = forms.CharField(widget=forms.PasswordInput())
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name', None)
+        if not first_name:
+            raise forms.ValidationError('This field is required.')
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name', None)
+        if not last_name:
+            raise forms.ValidationError('This field is required.')
+        return last_name
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', None)
+        if not email:
+            raise forms.ValidationError('This field is required.')
+        return email
+
+    def clean_password_confirm(self):
+        password = self.cleaned_data.get('password', None)
+        password_confirm = self.cleaned_data.get('password_confirm', None)
+        if not password_confirm:
+            raise forms.ValidationError('This field is required.')
+        elif not password == password_confirm:
+            raise forms.ValidationError('Password must match.')
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'password']
+
+
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',

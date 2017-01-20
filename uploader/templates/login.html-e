@@ -21,7 +21,7 @@
         </div>
         <form method="post" action="/" class="form-signin" novalidate>
             {% csrf_token %}
-            <h2 class="form-signin-heading">File Cabinet Login</h2>
+            <h2 class="text-center form-signin-heading">File Cabinet Login</h2>
             {% for field in form %}
                 <div class="form-group {% if field.errors %}has-error{% endif %}">
                     <div class="row">
@@ -37,6 +37,7 @@
             <button class="btn btn-lg btn-primary file_cab_btn btn-block" type="submit">Sign in</button>
         </form>
         <div class="text-center">
+            <p><a href="{% url 'registration' %}">Register</a></p>
             <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
         </div>
     </div>
