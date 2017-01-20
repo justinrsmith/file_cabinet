@@ -20,6 +20,7 @@ class RegistrationForm(forms.ModelForm):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         for f in self.fields:
             self.fields[f].widget.attrs.update({'class' : 'form-control'})
+        self.fields['email'].label = 'Email'
     password = forms.CharField(widget=forms.PasswordInput)
     password_confirm = forms.CharField(widget=forms.PasswordInput())
 
@@ -76,6 +77,7 @@ class UploadedFileForm(forms.ModelForm):
         })
         self.fields['name'].widget.attrs.update({'class' : 'form-control'})
         self.fields['note'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['file'].label = 'Select File'
 
     def clean(self):
         data = self.cleaned_data
