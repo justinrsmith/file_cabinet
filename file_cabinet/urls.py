@@ -24,6 +24,8 @@ urlpatterns = [
 
     # Authorization urls
 
+    #  Register
+    url(r'^registration/$', uploader_views.register_user, name='registration'),
     #  Login
     url(r'^$', uploader_views.login_view, name='login'),
     #  Logut

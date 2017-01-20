@@ -2,11 +2,28 @@ from datetime import datetime
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from uploader.models import UploadedFile, Project
-from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm
+from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm, RegistrationForm
+
+def register_user(request):
+    form = RegistrationForm()
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.cleaned_data.pop('password_confirm')
+            new_user = User.objects.create_user(**form.cleaned_data)
+            login(request, new_user)
+            messages.success(
+                request, 'Thank you, %s you have been successfully registered.' % new_user.username
+                )
+            return redirect('/')
+    return render(request, 'registration.html', {
+        'form': form
+    })
 
 def login_view(request):
     form = LoginForm()
@@ -130,10 +147,10 @@ def add_project(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
-            #TODO: fix
             new_project = form.save(commit=False)
-            new_project.group_id = 1
             new_project.save()
+            new_project.users.add(request.user)
+
             return redirect('/uploader/'+str(new_project.id))
 
     return render(request, 'add_project.html', {
