@@ -41,7 +41,7 @@
                                 <td>{{ f.datetime.date }}</td>
                                 <td>{{ f.user }}</td>
                                 {% if request.user == f.user %}
-                                    <td class><a href="/uploader/delete/{{ project.id }}/{{ f.id }}/"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                                    <td class><a class="delete_file" href="/uploader/delete/{{ project.id }}/{{ f.id }}/#files_uploaded"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
                                 {% else %}
                                     <td></td>
                                 {% endif %}
@@ -53,3 +53,13 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    var elems = document.getElementsByClassName('delete_file')
+    var confirmIt = function (e) {
+        if (!confirm('Are you sure?')) e.preventDefault();
+    };
+    for (var i = 0, l = elems.length; i < l; i++) {
+        elems[i].addEventListener('click', confirmIt, false);
+    }
+</script>
