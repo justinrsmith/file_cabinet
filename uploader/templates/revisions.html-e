@@ -3,8 +3,15 @@
 <div class="well">
     <h3 class="title-header">Files Uploaded</h3>
     <div class="row">
+        <div class="col-xs-4">
+            <form class="pull-left form-inline" action="/uploader/get_search/{{ project.id }}/{% if revision %}{{ revision }}/{% endif %}#files_uploaded" method="post">
+                {% csrf_token %}
+                <label for="">File Search</label>
+                <input type="text" name="file_search" value="{% if search_term %}{{ search_term }}{% endif %}" class="form-control">
+            </form>
+        </div>
         <div class="col-xs-4 pull-right">
-            <form class="pull-right form-inline" action="/uploader/{{ project.id }}/get_revision/#files_uploaded" method="post">
+            <form class="pull-right form-inline" action="/uploader/get_revision/{{ project.id }}/{% if search_term %}{{ search_term }}/{% endif %}#files_uploaded" method="post">
                 {% csrf_token %}
                 <label for="">Revision</label>
                 <select name="revision" style="width:150px;" class="form-control" onchange="this.form.submit()">
@@ -34,7 +41,7 @@
                     <tbody>
                         {% for f in project_files %}
                             <tr>
-                                <td><a href="{{ f.file.url }}">{% if f.name %}{{ f.name }}{% else %}{{ f.readable_file_name }}{% endif %}</a></td>
+                                <td><a href="{{ f.file.url }}">{% if f.display_name %}{{ f.display_name }}{% else %}{{ f.readable_file_name }}{% endif %}</a></td>
                                 <td>{{ f.revision }}</td>
                                 <td>{{ f.extension }}</td>
                                 <td class="wrap-td">{{ f.note }}</td>

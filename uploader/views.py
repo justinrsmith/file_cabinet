@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
 from uploader.models import UploadedFile, Project
 from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm, RegistrationForm
@@ -55,7 +56,7 @@ def logout_view(request):
     return redirect('/')
 
 @login_required
-def uploader(request, project=None, revision=None):
+def uploader(request, project=None, revision=None, search=None):
     form = UploadedFileForm()
     projects = Project.objects.filter(users=request.user)
     # If only one project and project wasn't passed in redirect with the one
@@ -71,7 +72,7 @@ def uploader(request, project=None, revision=None):
             uploaded_file.user_id = request.user.id
             uploaded_file.datetime = datetime.now()
             uploaded_file.save()
-            file_name = uploaded_file.name if uploaded_file.name else uploaded_file.file
+            file_name = uploaded_file.display_name if uploaded_file.display_name else uploaded_file.file
             messages.success(
                 request, '%s has been successfully uploaded.' % uploaded_file.readable_file_name()
                 )
@@ -87,6 +88,10 @@ def uploader(request, project=None, revision=None):
                 revision=revision
             ).order_by('-datetime')
             revision = int(revision)
+        if search:
+            project_files = project_files.filter(
+                Q(file__contains=search) | Q(display_name__contains=search)
+            )
         paginator = Paginator(project_files, 10)
         page = request.GET.get('page', None)
         try:
@@ -103,7 +108,8 @@ def uploader(request, project=None, revision=None):
             'form': form,
             'project_files': project_files,
             'revisions': revisions,
-            'revision': revision
+            'revision': revision,
+            'search_term': search
         })
     return render(request, 'uploader.html', {
         'selected_project': project,
@@ -114,9 +120,19 @@ def get_project(request):
     project = request.POST['project']
     return redirect('/uploader/'+project)
 
-def get_revision(request, project):
+def get_revision(request, project, search=None):
     revision = request.POST['revision']
+    if not revision and search:
+        return redirect('/uploader/'+project+'/'+search)
+    if search:
+        return redirect('/uploader/'+project+'/'+revision+'/'+search)
     return redirect('/uploader/'+project+'/'+revision)
+
+def get_search(request, project, revision=None):
+    search = request.POST['file_search']
+    if revision:
+        return redirect('/uploader/'+project+'/'+revision+'/'+search)
+    return redirect('/uploader/'+project+'/'+search)
 
 def edit_profile(request, project=None):
     if request.method == 'POST':
