@@ -1,6 +1,8 @@
 from django import forms
-from uploader.models import UploadedFile, Project
 from django.contrib.auth.models import User
+from django.db.models import Q
+
+from uploader.models import UploadedFile, Project
 
 ALLOWED_EXTENSIONS = [
     'jpg',
@@ -11,6 +13,7 @@ ALLOWED_EXTENSIONS = [
     'xlsx',
     'csv',
     'py',
+    'txt',
 ]
 
 MAX_UPLOAD_SIZE = 52428800
@@ -119,8 +122,11 @@ class UploadedFileForm(forms.ModelForm):
             revision = self.cleaned_data.get('revision')
             if '.' in display_name:
                 name, ext = display_name.split('.')
+            #TODO: pep8/django style check
             uploaded_files = UploadedFile.objects.filter(
-                file__contains=display_name, revision=revision)
+                Q(file__contains=display_name) | Q(display_name=display_name),
+                revision=revision
+            )
             if uploaded_files:
                 raise forms.ValidationError(
                     '%s already exists in project for revision number %s.' % (display_name, revision))
