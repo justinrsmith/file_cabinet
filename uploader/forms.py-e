@@ -13,7 +13,7 @@ ALLOWED_EXTENSIONS = [
     'py',
 ]
 
-MAX_UPLOAD_SIZE = 5242880
+MAX_UPLOAD_SIZE = 52428800
 
 class RegistrationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -101,6 +101,7 @@ class UploadedFileForm(forms.ModelForm):
     def clean_file(self):
         file = self.cleaned_data.get('file')
         name, ext = file.name.split('.')
+        print(file.size, MAX_UPLOAD_SIZE)
         if ext not in ALLOWED_EXTENSIONS:
             raise forms.ValidationError('%s is not an allowed file type.' % ext)
         elif file.size > MAX_UPLOAD_SIZE:

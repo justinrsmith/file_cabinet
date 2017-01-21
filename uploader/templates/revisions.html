@@ -49,6 +49,23 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <nav aria-label="...">
+                    <ul class="pager">
+                        <div class="col-md-4">
+                            {% if project_files.has_previous %}
+                                <li class="previous"><a href="?page={{ project_files.previous_page_number }}"><span aria-hidden="true">&larr;</span> Older</a></li>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Page {{ project_files.number }} of {{ project_files.paginator.num_pages }}</strong>
+                        </div>
+                        <div class="col-md-4">
+                            {% if project_files.has_next %}
+                                <li class="next"><a href="?page={{ project_files.next_page_number }}">Newer <span aria-hidden="true">&rarr;</span></a></li>
+                            {% endif %}
+                        </div>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
