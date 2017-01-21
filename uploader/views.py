@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from uploader.models import UploadedFile, Project
 from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm, RegistrationForm
@@ -86,6 +87,16 @@ def uploader(request, project=None, revision=None):
                 revision=revision
             ).order_by('-datetime')
             revision = int(revision)
+        paginator = Paginator(project_files, 10)
+        page = request.GET.get('page', None)
+        try:
+            project_files = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            project_files = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            project_files = paginator.page(paginator.num_pages)
         return render(request, 'uploader.html', {
             'project': project,
             'projects': projects,
