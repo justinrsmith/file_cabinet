@@ -67,5 +67,5 @@ urlpatterns = [
     #  view to delete seclected file (TODO)
     url(r'^uploader/delete/(?P<project>[0-9]+)/(?P<file>[0-9]+)/$', uploader_views.delete_file, name='delete_file'),
     #  add a project
-    url(r'^uploader/add_project/', uploader_views.add_project, name='add_project')
+    url(r'^uploader/add_project/', uploader_views.add_project, name='add_project'),
 ]  + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
