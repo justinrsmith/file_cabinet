@@ -50,10 +50,20 @@ urlpatterns = [
     url(r'^uploader/(?P<project>[0-9]+)/$', uploader_views.uploader, name='uploader'),
     #  feed in project and revision
     url(r'^uploader/(?P<project>[0-9]+)/(?P<revision>[0-9]+)/$', uploader_views.uploader, name='uploader'),
+    #  feed in project and search term
+    url(r'^uploader/(?P<project>[0-9]+)/(?P<search>[\w\-]+)/$', uploader_views.uploader, name='uploader'),
+    #  feed in project and revision and search term
+    url(r'^uploader/(?P<project>[0-9]+)/(?P<revision>[0-9]+)/(?P<search>[\w\-]+)/$', uploader_views.uploader, name='uploader'),
     #  view to redirect to selected project (TODO)
     url(r'^uploader/get_project/$', uploader_views.get_project, name='get_project'),
     #  view to redirect to selected project and revision for projects (TODO)
-    url(r'^uploader/(?P<project>[0-9]+)/get_revision/$', uploader_views.get_revision, name='get_revision'),
+    url(r'^uploader/get_revision/(?P<project>[0-9]+)/$', uploader_views.get_revision, name='get_revision'),
+    #  view to redirect to selected project and revision for projects (TODO)
+    url(r'^uploader/get_revision/(?P<project>[0-9]+)/(?P<search>[\w\-]+)/$', uploader_views.get_revision, name='get_revision'),
+    #  view to redirect to selected project and search term for projects (TODO)
+    url(r'^uploader/get_search/(?P<project>[0-9]+)/$', uploader_views.get_search, name='get_search'),
+    #  view to redirect to selected project and revision and search term for projects (TODO)
+    url(r'^uploader/get_search/(?P<project>[0-9]+)/(?P<revision>[0-9]+)/$', uploader_views.get_search, name='get_search'),
     #  view to delete seclected file (TODO)
     url(r'^uploader/delete/(?P<project>[0-9]+)/(?P<file>[0-9]+)/$', uploader_views.delete_file, name='delete_file'),
     #  add a project

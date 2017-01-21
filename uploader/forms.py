@@ -75,7 +75,7 @@ class UploadedFileForm(forms.ModelForm):
             'style': 'width:25%;',
             'min': '0'
         })
-        self.fields['name'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['display_name'].widget.attrs.update({'class' : 'form-control'})
         self.fields['note'].widget.attrs.update({'class' : 'form-control'})
         self.fields['file'].label = 'Select File'
 
@@ -96,22 +96,39 @@ class UploadedFileForm(forms.ModelForm):
         revision = self.cleaned_data.get('revision')
         if revision < 1:
             raise forms.ValidationError('Revision must be a number greater than zero.')
+        file = self.cleaned_data.get('file', None)
+        if file:
+            name, ext = file.name.split('.')
+            uploaded_files = UploadedFile.objects.filter(file__contains=name, revision=revision)
+            if uploaded_files:
+                raise forms.ValidationError('%s already exists in project for revision number %s.' % (file.name, revision))
         return revision
 
     def clean_file(self):
         file = self.cleaned_data.get('file')
         name, ext = file.name.split('.')
-        print(file.size, MAX_UPLOAD_SIZE)
         if ext not in ALLOWED_EXTENSIONS:
             raise forms.ValidationError('%s is not an allowed file type.' % ext)
         elif file.size > MAX_UPLOAD_SIZE:
             raise forms.ValidationError('%s is greater than 50mb.' % ext)
         return file
 
+    def clean_display_name(self):
+        display_name = self.cleaned_data.get('display_name', None)
+        if display_name:
+            revision = self.cleaned_data.get('revision')
+            if '.' in display_name:
+                name, ext = display_name.split('.')
+            uploaded_files = UploadedFile.objects.filter(
+                file__contains=display_name, revision=revision)
+            if uploaded_files:
+                raise forms.ValidationError(
+                    '%s already exists in project for revision number %s.' % (display_name, revision))
+        return self.cleaned_data.get('display_name')
 
     class Meta:
         model = UploadedFile
-        fields = ['file', 'revision', 'name',  'note']
+        fields = ['file', 'revision', 'display_name',  'note']
         label = {
             'file': 'Select File'
         }
