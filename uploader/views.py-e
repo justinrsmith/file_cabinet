@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -54,6 +55,7 @@ def login_view(request):
         'form': form
     })
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('/')
@@ -118,20 +120,22 @@ def uploader(request, project=None, revision=None, search=None):
             'revision': revision,
             'search_term': search
         })
-    user_activity = UserActivity.objects.get(user=request.user)
-    if user_activity:
+    try:
+        user_activity = UserActivity.objects.get(user=request.user)
         project = str(user_activity.last_project.id)
         return redirect('/uploader/'+project)
+    except ObjectDoesNotExist:
+        return render(request, 'uploader.html', {
+            'selected_project': project,
+            'projects': projects
+        })
 
-    return render(request, 'uploader.html', {
-        'selected_project': project,
-        'projects': projects
-    })
-
+@login_required
 def get_project(request):
     project = request.POST['project']
     return redirect('/uploader/'+project)
 
+@login_required
 def get_revision(request, project, search=None):
     revision = request.POST['revision']
     if not revision and search:
@@ -140,12 +144,14 @@ def get_revision(request, project, search=None):
         return redirect('/uploader/'+project+'/'+revision+'/'+search)
     return redirect('/uploader/'+project+'/'+revision)
 
+@login_required
 def get_search(request, project, revision=None):
     search = request.POST['file_search']
     if revision:
         return redirect('/uploader/'+project+'/'+revision+'/'+search)
     return redirect('/uploader/'+project+'/'+search)
 
+@login_required
 def edit_profile(request, project=None):
     if request.method == 'POST':
         form = EditProfileForm(request.POST)
@@ -177,10 +183,12 @@ def edit_profile(request, project=None):
         'project': project
     })
 
+@login_required
 def delete_file(request, project, file):
     UploadedFile.objects.get(pk=file).delete()
     return redirect('/uploader/'+project+'/')
 
+@login_required
 def add_project(request):
     form = ProjectForm()
     if request.method == 'POST':
@@ -196,6 +204,7 @@ def add_project(request):
         'form': form
     })
 
+@login_required
 def get_file(request, id):
     file = UploadedFile.objects.get(pk=id)
     path = file.file.name

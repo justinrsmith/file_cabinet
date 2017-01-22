@@ -34,24 +34,26 @@
                 {% endif %}
             </div>
             <div class="col-xs-6 col-xs-offset-3">
-                <form method="post" action="/registration/" novalidate>
-                    {% csrf_token %}
-                    <h2 class="text-center">Registration</h2>
-                    {% for field in form %}
-                        <div class="form-group {% if field.errors %}has-error{% endif %}">
-                            <div class="row">
-                                <label class="col-sm-3 control-label" for="">{{ field.label }}</label>
-                                <div class="col-sm-8">
-                                    {{ field }}
-                                    {% if field.errors %}
-                                        <span class="help-block">{{ field.errors.as_text }}</span>
-                                    {% endif %}
+                <div class="well">
+                    <form method="post" action="/registration/" novalidate>
+                        {% csrf_token %}
+                        <h2 class="text-center">Registration</h2>
+                        {% for field in form %}
+                            <div class="form-group {% if field.errors %}has-error{% endif %}">
+                                <div class="row">
+                                    <label class="col-sm-4 control-label" for="">{{ field.label }}</label>
+                                    <div class="col-sm-8">
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            <span class="help-block">{{ field.errors.as_text }}</span>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                    <button class="btn btn-lg file_cab_btn btn-block" type="submit">Register</button>
-                </form>
+                        {% endfor %}
+                        <button class="btn btn-md file_cab_btn btn-block" type="submit">Register</button>
+                    </form>
+                </div>
             </div>
         </div>
     </body>

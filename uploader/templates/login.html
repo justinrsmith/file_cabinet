@@ -33,25 +33,32 @@
                 {% endfor %}
             {% endif %}
         </div>
-        <form method="post" action="/" class="form-signin" novalidate>
-            {% csrf_token %}
-            <h2 class="text-center form-signin-heading">Login</h2>
-            {% for field in form %}
-                <div class="form-group {% if field.errors %}has-error{% endif %}">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            {{ field }}
-                            {% if field.errors %}
-                                <span class="help-block">{{ field.errors.as_text }}</span>
-                            {% endif %}
-                        </div>
-                    </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="well">
+                    <form method="post" action="/" class="form-signin" novalidate>
+                        {% csrf_token %}
+                        <h2 class="text-center form-signin-heading">Login</h2>
+                        {% for field in form %}
+                            <div class="form-group {% if field.errors %}has-error{% endif %}">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            <span class="help-block">{{ field.errors.as_text }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <button class="btn btn-md file_cab_btn btn-block" type="submit">Sign in</button>
+                        <a href="{% url 'registration' %}" class="btn btn-md file_cab_btn btn-block" type="submit">Create an account</a>
+                    </form>
                 </div>
-            {% endfor %}
-            <button class="btn btn-lg file_cab_btn btn-block" type="submit">Sign in</button>
-        </form>
+            </div>
+        </div>
+
         <div class="text-center">
-            <p><a href="{% url 'registration' %}">Register</a></p>
             <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
         </div>
     </div>
