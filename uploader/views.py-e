@@ -1,12 +1,15 @@
+import os
 from datetime import datetime
 
-from django.shortcuts import render, redirect
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 
 from uploader.models import UploadedFile, Project
 from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm, RegistrationForm
@@ -183,3 +186,15 @@ def add_project(request):
     return render(request, 'add_project.html', {
         'form': form
     })
+
+def get_file(request, id):
+    file = UploadedFile.objects.get(pk=id)
+    path = file.file.name
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    else:
+        raise Http404

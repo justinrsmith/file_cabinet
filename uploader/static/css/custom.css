@@ -83,6 +83,7 @@ body {
 .file_cab_btn {
     background-color: #16a085;
     border-color: #16a085;
+    color: white;
 }
 
 .file_cab_btn:hover {

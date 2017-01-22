@@ -50,7 +50,7 @@
                             </div>
                         </div>
                     {% endfor %}
-                    <button class="btn btn-lg btn-primary file_cab_btn btn-block" type="submit">Register</button>
+                    <button class="btn btn-lg file_cab_btn btn-block" type="submit">Register</button>
                 </form>
             </div>
         </div>
