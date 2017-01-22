@@ -1,9 +1,10 @@
 import os
+
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
-from django.contrib.auth.models import User
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/<username>/<project>/<revision/<filename>
@@ -33,6 +34,10 @@ class UploadedFile(models.Model):
     def extension(self):
         name, extension = os.path.splitext(self.file.name)
         return extension
+
+class UserActivity(models.Model):
+    user = models.OneToOneField(User)#TODO??, on_delete = models.CASCADE)
+    last_project = models.ForeignKey(Project)
 
 @receiver(post_delete, sender=UploadedFile)
 def uploadedfile_delete(sender, instance, **kwargs):

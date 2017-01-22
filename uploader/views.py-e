@@ -11,7 +11,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from uploader.models import UploadedFile, Project
+from uploader.models import UploadedFile, Project, UserActivity
 from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm, RegistrationForm
 
 def register_user(request):
@@ -82,6 +82,10 @@ def uploader(request, project=None, revision=None, search=None):
             return redirect('/uploader/'+project)
     if project:
         project = Project.objects.get(pk=project)
+        obj, created = UserActivity.objects.update_or_create(
+            user=request.user,
+            defaults={'last_project': project}
+        )
         project_files = UploadedFile.objects.filter(
             project_id=project
         ).order_by('-datetime')
@@ -114,6 +118,11 @@ def uploader(request, project=None, revision=None, search=None):
             'revision': revision,
             'search_term': search
         })
+    user_activity = UserActivity.objects.get(user=request.user)
+    if user_activity:
+        project = str(user_activity.last_project.id)
+        return redirect('/uploader/'+project)
+
     return render(request, 'uploader.html', {
         'selected_project': project,
         'projects': projects
