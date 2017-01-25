@@ -1,9 +1,0 @@
-.DS_STORE
-file_cabinet/__pycache__/
-uploader/__pycache__/
-media/
-venv/
-uploader/*.pyc
-*.pyc
-uploader/migrations/__pycache__/
-file_cabinet/*.pyc
