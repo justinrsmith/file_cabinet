@@ -84,3 +84,5 @@ urlpatterns = [
     url(r'^uploader/add_project/', uploader_views.add_project, name='add_project'),
     url(r'^uploader/get_file/(?P<id>[0-9]+)', uploader_views.get_file, name='get_file')
 ]  + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += static.static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
