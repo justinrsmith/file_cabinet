@@ -7,5 +7,4 @@ uploader/*.pyc
 *.pyc
 uploader/migrations/__pycache__/
 file_cabinet/*.pyc
-file_cabinet/settings.py
 file_cabinet/settings.py-e
