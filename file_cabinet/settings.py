@@ -25,7 +25,7 @@ SECRET_KEY = 'v%_tc*iin&6(ns3vbjsvw^o10p(8v935srbmk6+eqh(j8g!#p1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '10.0.1.6', '10.6.31.76']
+ALLOWED_HOSTS = ['127.0.0.1', '10.0.1.6', '10.6.31.76', 'serene-woodland-40499.herokuapp.com']
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
