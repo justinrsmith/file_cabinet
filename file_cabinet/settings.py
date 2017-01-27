@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'v%_tc*iin&6(ns3vbjsvw^o10p(8v935srbmk6+eqh(j8g!#p1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '10.0.1.6', '10.6.31.76', 'filecab.herokuapp.com']
+ALLOWED_HOSTS = ['138.197.66.125', '127.0.0.1', '10.0.1.6', '10.6.31.76', 'filecab.herokuapp.com']
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -76,23 +76,16 @@ WSGI_APPLICATION = 'file_cabinet.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-# If debug is on use sqlite
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'filecabinet',
-            'USER': 'filecabuser',
-            'PASSWORD': 'p@ssword',
-        }
-    }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'filecabinet',
+        'USER': '****',
+        'PASSWORD': '****',
+	'HOST': 'localhost',
+	'PORT': '',
+   }
+}
 
 
 # Password validation
@@ -133,7 +126,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, '../static/')
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
