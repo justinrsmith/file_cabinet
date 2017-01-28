@@ -27,6 +27,11 @@ class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     password_confirm = forms.CharField(widget=forms.PasswordInput())
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username', None)
+        if username:
+            return username.lower()
+
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name', None)
         if not first_name:

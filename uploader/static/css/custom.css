@@ -44,8 +44,6 @@ body {
 .title-header {
   margin-top: 0px;
 }
-
-
 .wrap-td {
     word-wrap: break-word;
     min-width: 160px;
@@ -102,4 +100,8 @@ then pull-right*/
     .revision {
         float: right;
     }
+}
+
+.delete_file {
+    color: #d9534f;
 }

@@ -36,7 +36,7 @@ def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = request.POST['username']
+            username = request.POST['username'].lower()
             password = request.POST['password']
             user = authenticate(username=username, password=password)
             if user is not None:
@@ -91,6 +91,7 @@ def uploader(request, project=None, revision=None, search=None):
         project_files = UploadedFile.objects.filter(
             project_id=project
         ).order_by('-datetime')
+        recently_uploaded = project_files[:14]
         revisions = sorted(list(set([f.revision for f in project_files])))
         if revision:
             project_files = project_files.filter(
@@ -118,7 +119,8 @@ def uploader(request, project=None, revision=None, search=None):
             'project_files': project_files,
             'revisions': revisions,
             'revision': revision,
-            'search_term': search
+            'search_term': search,
+            'recently_uploaded': recently_uploaded
         })
     try:
         user_activity = UserActivity.objects.get(user=request.user)
