@@ -16,7 +16,7 @@
                 </div>
             {% else %}
                 <div class="row">
-                    <div class="col-xs-8" id="upload_form">
+                    <div class="col-md-8" id="upload_form">
                         <div class="well">
                             <h3 class="title-header">{{ project.name }}</h3>
                             {% if form.non_field_errors %}
@@ -32,8 +32,8 @@
                                     {% endif %}
                                     <div class="form-group {% if field.errors %}has-error{% endif %}">
                                         <div class="row">
-                                            <label class="col-xs-2 control-label" for="">{{ field.label }}</label>
-                                            <div class="col-xs-7">
+                                            <label class="col-md-2 control-label" for="">{{ field.label }}</label>
+                                            <div class="col-md-7">
                                                 {{ field }}
                                                 {% if field.name == 'file' %}
                                                     <p class="help-block"><strong>Accepted File Types:</strong> jpg/jpeg, png, zip, psd, xlsx, csv, py, txt</p>
@@ -50,7 +50,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="col-xs-4" id="recent_form">
+                    <div class="col-md-4" id="recent_form">
                         <div class="well">
                             <h4>Recently Uploaded</h4>
                                 <table>
@@ -64,7 +64,9 @@
                     </div>
                 </div>
                 <div class="row" id="files_uploaded">
-                    {% include 'revisions.html' %}
+                    <div class="col-md-12">
+                        {% include 'revisions.html' %}
+                    </div>
                 </div>
             {% endif %}
 {% endblock content %}

@@ -45,13 +45,6 @@ body {
   margin-top: 0px;
 }
 
-#recent_form {
-    padding-right: 0px;
-}
-
-#upload_form {
-    padding-left: 0px;
-}
 
 .wrap-td {
     word-wrap: break-word;
@@ -102,4 +95,11 @@ h1, h2, h3, h4, h5, h6 {
 
 body {
     background-color: #ecf0f1;
+}
+/*Used in revisions.html for if width is desktop
+then pull-right*/
+@media (min-width: 500px) {
+    .revision {
+        float: right;
+    }
 }
