@@ -39,7 +39,7 @@
                     <tbody>
                         {% for f in project_files %}
                             <tr>
-                                <td><a href="/uploader/get_file/{{ f.id }}">{% if f.display_name %}{{ f.display_name }}{% else %}{{ f.readable_file_name }}{% endif %}</a></td>
+                                <td><a href="/uploader/get_file/{{ f.id }}">{{ f.readable_file_name }}</a></td>
                                 <td>{{ f.revision }}</td>
                                 <td>{{ f.extension }}</td>
                                 <td class="wrap-td">{{ f.note }}</td>

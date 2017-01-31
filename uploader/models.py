@@ -18,6 +18,7 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+
 # Create your models here.
 class UploadedFile(models.Model):
     file         = models.FileField(upload_to=user_directory_path)
@@ -29,6 +30,8 @@ class UploadedFile(models.Model):
     user         = models.ForeignKey(User)
 
     def readable_file_name(self):
+        if self.display_name:
+            return self.display_name
         return str(self.file).split('/')[3]
 
     def extension(self):

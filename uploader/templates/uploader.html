@@ -42,7 +42,6 @@
                                                     <span class="help-block">{{ field.errors.as_text }}</span>
                                                 {% endif %}
                                             </div>
-
                                         </div>
                                     </div>
                                 {% endfor %}
@@ -56,7 +55,7 @@
                                 <table>
                                     {% for ru in recently_uploaded %}
                                         <tr>
-                                            <td><a href="{{ ru.file.url }}">{% if ru.name %}{{ ru.name }}{% else %}{{ ru.readable_file_name }}{% endif %}</a></td>
+                                            <td><a href="{{ ru.file.url }}">{{ ru.readable_file_name }}</a></td>
                                         </tr>
                                     {% endfor %}
                                 </table>

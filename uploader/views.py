@@ -77,7 +77,6 @@ def uploader(request, project=None, revision=None, search=None):
             uploaded_file.user_id = request.user.id
             uploaded_file.datetime = datetime.now()
             uploaded_file.save()
-            file_name = uploaded_file.display_name if uploaded_file.display_name else uploaded_file.file
             messages.success(
                 request, '%s has been successfully uploaded.' % uploaded_file.readable_file_name()
                 )
@@ -193,6 +192,7 @@ def delete_file(request, project, file):
 @login_required
 def add_project(request):
     form = ProjectForm()
+    projects = Project.objects.filter(users=request.user)
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
@@ -203,7 +203,8 @@ def add_project(request):
             return redirect('/uploader/'+str(new_project.id))
 
     return render(request, 'add_project.html', {
-        'form': form
+        'form': form,
+        'projects': projects
     })
 
 @login_required

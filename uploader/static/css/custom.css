@@ -105,3 +105,11 @@ then pull-right*/
 .delete_file {
     color: #d9534f;
 }
+
+.delete_file:hover {
+    color: #d9534f;
+}
+
+.table-responsive {
+    border: none;
+}
