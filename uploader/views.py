@@ -153,8 +153,11 @@ def get_search(request, project, revision=None):
     return redirect('/uploader/'+project+'/'+search)
 
 @login_required
+#TODO: rewrite this please :(
 def edit_profile(request, project=None):
     if request.method == 'POST':
+        if project:
+            project = Project.objects.get(pk=project)
         form = EditProfileForm(request.POST)
         if form.is_valid():
             user = request.user
@@ -164,25 +167,30 @@ def edit_profile(request, project=None):
             user.save()
             messages.info(request, 'User profile has been updated.')
             if project:
-                return redirect('/uploader/'+project)
+                return redirect('/uploader/'+str(project.id))
             return redirect('/uploader/')
         return render(request, 'edit_profile.html', {
             'user': request.user,
             'form': form,
             'project': project
         })
-    data = {
-        'first_name': request.user.first_name,
-        'last_name': request.user.last_name,
-        'email': request.user.email
-    }
-    form = EditProfileForm(initial=data)
-
-    return render(request, 'edit_profile.html', {
-        'user': request.user,
-        'form': form,
-        'project': project
-    })
+    else:
+        form = EditProfileForm(initial={
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email
+        })
+        if project:
+            project = Project.objects.get(pk=project)
+            return render(request, 'edit_profile.html', {
+                'user': request.user,
+                'form': form,
+                'project': project
+            })
+        return render(request, 'edit_profile.html', {
+            'user': request.user,
+            'form': form
+        })
 
 @login_required
 def delete_file(request, project, file):
