@@ -186,7 +186,7 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'description']
+        fields = '__all__'
         widgets = {
           'description': forms.Textarea(attrs={'rows':4, 'cols':15}),
         }

@@ -21,7 +21,7 @@
                             <option {% if p == project %}selected="selected"{% endif %} value="{{ p.id }}">{{ p.name }}</option>
                         {% endfor %}
                     </select>
-                    <a href="/uploader/manage_projects/" class="btn btn-default">Manage Projects</a>
+                    <a href="/uploader/manage_project/{{ project.id }}" class="btn btn-default">Manage Project</a>
                     <a href="/uploader/add_project/" class="btn btn-default">Add Project</a>
                 </form>
             </div>

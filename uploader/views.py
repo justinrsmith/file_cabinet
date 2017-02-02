@@ -93,7 +93,6 @@ def uploader(request, project=None, revision=None, search=None):
             messages.success(
                 request, '%s has been successfully uploaded.' % uploaded_file.readable_file_name()
                 )
-            print('hi2')
             return redirect('/uploader/'+str(project.id))
     if project:
         obj, created = UserActivity.objects.update_or_create(
@@ -143,11 +142,6 @@ def uploader(request, project=None, revision=None, search=None):
             'selected_project': project,
             'projects': projects
         })
-
-@login_required
-def get_project(request):
-    project = request.POST['project']
-    return redirect('/uploader/'+project)
 
 @login_required
 def get_revision(request, project, search=None):
@@ -211,21 +205,24 @@ def delete_file(request, project, file):
     return redirect('/uploader/'+project+'/')
 
 @login_required
-def add_project(request):
+def get_or_create_project(request, project=None):
     form = ProjectForm()
     projects = Project.objects.filter(users=request.user)
+    #TODO: is this legit?
+    try:
+        curr_proj = Project.objects.get(pk=project)
+        form = ProjectForm(instance=curr_proj)
+    except Project.DoesNotExist:
+        pass
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
-            new_project = form.save(commit=False)
-            new_project.save()
-            new_project.users.add(request.user)
-
-            return redirect('/uploader/'+str(new_project.id))
-    print(projects)
+            project = form.save()
+            return redirect('/uploader/'+str(project.id))
     return render(request, 'add_project.html', {
         'form': form,
-        'projects': projects
+        'projects': projects,
+        'project': project
     })
 
 @login_required

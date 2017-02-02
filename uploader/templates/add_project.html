@@ -1,4 +1,5 @@
 {% load static %}
+{% load uploader_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +51,7 @@
                                 <div class="row">
                                     <label class="col-sm-4 control-label" for="">{{ field.label }}</label>
                                     <div class="col-sm-8">
-                                        {{ field }}
+                                        {% add_attr field class='form-control' %}
                                         {% if field.errors %}
                                             <span class="help-block">{{ field.errors.as_text }}</span>
                                         {% endif %}
