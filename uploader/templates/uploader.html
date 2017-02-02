@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
             <div class="row">
-                {% if messages %}
-                    {% for message in messages %}
-                            <div class="main-alert alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
+                <div class="col-md-12">
+                    {% if messages %}
+                        {% for message in messages %}
+                                <div class="main-alert alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
             </div>
             {% if not project %}
                 <div class="row">
@@ -55,7 +57,7 @@
                                 <table>
                                     {% for ru in recently_uploaded %}
                                         <tr>
-                                            <td><a href="{{ ru.file.url }}">{{ ru.readable_file_name }}</a></td>
+                                            <td><a href="/uploader/get_file/{{ ru.id }}">{{ ru.readable_file_name }}</a></td>
                                         </tr>
                                     {% endfor %}
                                 </table>

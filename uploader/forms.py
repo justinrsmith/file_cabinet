@@ -190,3 +190,10 @@ class ProjectForm(forms.ModelForm):
         widgets = {
           'description': forms.Textarea(attrs={'rows':4, 'cols':15}),
         }
+
+
+class EditProjectForm(forms.ModelForm):
+
+    class Meta:
+        model  = Project
+        fields = '__all__'

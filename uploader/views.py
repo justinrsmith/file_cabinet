@@ -6,14 +6,14 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from uploader.models import UploadedFile, Project, UserActivity
-from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm, RegistrationForm
+from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm, RegistrationForm, EditProjectForm
 
 def register_user(request):
     form = RegistrationForm()
@@ -64,31 +64,44 @@ def logout_view(request):
 def uploader(request, project=None, revision=None, search=None):
     form = UploadedFileForm()
     projects = Project.objects.filter(users=request.user)
-    # If only one project and project wasn't passed in redirect with the one
-    # project user has access too
-    if len(projects) == 1 and project is None:
-        return redirect('/uploader/'+str(projects.first().id))
+    try:
+        project = Project.objects.get(pk=project)
+    except Project.DoesNotExist:
+        pass #TODO: best way to do this?
     if request.method == 'POST':
-        #TODO: request.FILES?
         form = UploadedFileForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_file = form.save(commit=False)
-            uploaded_file.project_id = project
+            uploaded_file.project = project
             uploaded_file.user_id = request.user.id
             uploaded_file.datetime = datetime.now()
             uploaded_file.save()
+            project_users = [user.email for user in project.users.all()]
+            # Build and send email message to all users on project besides
+            # the user who uploaded
+            subject = 'A new file has been uploaded to %s' % project.name
+            body = """
+                A new file called %s has been uploaded into file
+                cabinet by %s for the project %s.
+            """ % (uploaded_file.readable_file_name(), request.user.username, project.name)
+            message = EmailMessage(
+                subject,
+                body,
+                bcc=project_users #bcc
+            )
+            #message.send()
             messages.success(
                 request, '%s has been successfully uploaded.' % uploaded_file.readable_file_name()
                 )
-            return redirect('/uploader/'+project)
+            print('hi2')
+            return redirect('/uploader/'+str(project.id))
     if project:
-        project = Project.objects.get(pk=project)
         obj, created = UserActivity.objects.update_or_create(
             user=request.user,
             defaults={'last_project': project}
         )
         project_files = UploadedFile.objects.filter(
-            project_id=project
+            project=project
         ).order_by('-datetime')
         recently_uploaded = project_files[:14]
         revisions = sorted(list(set([f.revision for f in project_files])))
@@ -125,7 +138,7 @@ def uploader(request, project=None, revision=None, search=None):
         user_activity = UserActivity.objects.get(user=request.user)
         project = str(user_activity.last_project.id)
         return redirect('/uploader/'+project)
-    except ObjectDoesNotExist:
+    except UserActivity.DoesNotExist:
         return render(request, 'uploader.html', {
             'selected_project': project,
             'projects': projects
@@ -209,7 +222,7 @@ def add_project(request):
             new_project.users.add(request.user)
 
             return redirect('/uploader/'+str(new_project.id))
-
+    print(projects)
     return render(request, 'add_project.html', {
         'form': form,
         'projects': projects
