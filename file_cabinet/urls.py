@@ -31,8 +31,8 @@ urlpatterns = [
     #  Logut
     url(r'^logout/$', uploader_views.logout_view, name='logout'),
     #  Edit profile
-    url(r'^edit_profile/$', uploader_views.edit_profile, name='edit_profile'),
-    url(r'^edit_profile/(?P<project>[0-9]+)/$', uploader_views.edit_profile, name='edit_profile'),
+    url(r'^update_profile/$', uploader_views.update_profile, name='update_profile'),
+    url(r'^update_profile/(?P<project>[0-9]+)/$', uploader_views.update_profile, name='update_profile'),
     #  Pasword reset email form (django built in), with custom template #TODO: style??
     url(
         r'password_reset/$',  auth_views.password_reset, {
@@ -69,7 +69,7 @@ urlpatterns = [
     #  feed in project and revision and search term
     url(r'^uploader/(?P<project>[0-9]+)/(?P<revision>[0-9]+)/(?P<search>[\w\-]+)/$', uploader_views.uploader, name='uploader'),
     #  view to redirect to selected project (TODO)
-    #url(r'^uploader/get_project/$', uploader_views.get_project, name='get_project'),
+    url(r'^uploader/get_project/$', uploader_views.get_project, name='get_project'),
     #  view to redirect to selected project and revision for projects (TODO)
     url(r'^uploader/get_revision/(?P<project>[0-9]+)/$', uploader_views.get_revision, name='get_revision'),
     #  view to redirect to selected project and revision for projects (TODO)
@@ -82,9 +82,9 @@ urlpatterns = [
     url(r'^uploader/delete/(?P<project>[0-9]+)/(?P<file>[0-9]+)/$', uploader_views.delete_file, name='delete_file'),
     #  add a project
     url(r'^uploader/add_project/', uploader_views.get_or_create_project, name='get_or_create_project'),
-    url(r'^uploader/manage_project/(?P<project>[0-9]+)/', uploader_views.get_or_create_project, name='get_or_create_project'),
+    url(r'^uploader/edit_project/(?P<project>[0-9]+)/', uploader_views.get_or_create_project, name='get_or_create_project'),
     url(r'^uploader/get_file/(?P<id>[0-9]+)', uploader_views.get_file, name='get_file'),
-    url(r'^uploader/get_project/$', uploader_views.get_or_create_project, name='get_or_create_project'),
+    url(r'^uploader/delete_project/(?P<project>[0-9]+)/', uploader_views.delete_project, name='delete_project'),
     #get_or_create_project
 ]  + static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

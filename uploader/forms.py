@@ -180,20 +180,16 @@ class EditProfileForm(forms.ModelForm):
 
 class ProjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
         super(ProjectForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({'class' : 'form-control'})
-        self.fields['description'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['users'].queryset = User.objects.all().exclude(username=user)
 
     class Meta:
         model = Project
-        fields = '__all__'
+        exclude = ['created_by']
         widgets = {
           'description': forms.Textarea(attrs={'rows':4, 'cols':15}),
         }
-
-
-class EditProjectForm(forms.ModelForm):
-
-    class Meta:
-        model  = Project
-        fields = '__all__'
+        labels = {
+            'users': 'Additional Users'
+        }

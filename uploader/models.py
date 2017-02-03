@@ -10,10 +10,12 @@ def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/<username>/<project>/<revision/<filename>
     return '{0}/{1}/{2}/{3}'.format(instance.user.username, instance.project, instance.revision, filename)
 
+
 class Project(models.Model):
     name        = models.CharField(max_length=20, unique=True)
     description = models.TextField(max_length=100, blank=True)
-    users       = models.ManyToManyField(User)
+    users       = models.ManyToManyField(User, blank=True, related_name='users')
+    #created_by  = models.ForeignKey(User, related_name='created_by')
 
     def __str__(self):
         return self.name
@@ -37,6 +39,7 @@ class UploadedFile(models.Model):
     def extension(self):
         name, extension = os.path.splitext(self.file.name)
         return extension
+
 
 class UserActivity(models.Model):
     user = models.OneToOneField(User)#TODO??, on_delete = models.CASCADE)

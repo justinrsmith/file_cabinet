@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load uploader_tags %}
+{% block content %}
+    <div class="row">
+        <div class="class col-md-6 col-md-offset-3 well">
+            <div class="row">
+                <div class="col-md-8">
+                        <h3 class="title-header">{% if curr_proj %}{{ curr_proj.name }}{% else %}Add Project{% endif %}</h3>
+                </div>
+            </div>
+            <form method="POST" action="{% if not curr_proj %}/uploader/add_project/{% else %}/uploader/edit_project/{{ curr_proj.id }}/{% endif %}" class="" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    {% for err in form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">{{ err }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% for field in form %}
+                    <div class="form-group {% if field.errors %}has-error{% endif %}">
+                        <div class="row">
+                            <label class="col-sm-4 control-label" for="">{{ field.label }}</label>
+                            <div class="col-sm-8">
+                                {% add_attr field class='form-control' %}
+                                {% if field.errors %}
+                                    <span class="help-block">{{ field.errors.as_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <a class="btn file_cab_btn" href='/uploader/'>Return to Uploader</a>
+                    </div>
+                    <div class="col-md-5">
+                        {% if curr_proj %}
+                            <a href="/uploader/delete_project/{{ curr_proj.id }}/" class="pull-right btn btn-danger" id="delete_project">Delete</a>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        <button class="pull-right btn file_cab_btn" type="submit">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var elem = document.getElementById('delete_project')
+        console.log(elem)
+        var confirmIt = function (e) {
+            if (!confirm('Are you wish to delete the project and all of its associated files? THIS CANNOT BE REVERSED.')) e.preventDefault();
+        };
+        elem.addEventListener('click', confirmIt, false);
+    </script>
+{% endblock %}

@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 
 from django.conf import settings
 from django.contrib import messages
@@ -11,12 +10,13 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.utils import timezone
 
 from uploader.models import UploadedFile, Project, UserActivity
-from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm, ProjectForm, RegistrationForm, EditProjectForm
+from uploader.forms import UploadedFileForm, EditProfileForm, LoginForm,\
+                           ProjectForm, RegistrationForm
 
 def register_user(request):
-    form = RegistrationForm()
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -24,15 +24,22 @@ def register_user(request):
             new_user = User.objects.create_user(**form.cleaned_data)
             login(request, new_user)
             messages.success(
-                request, 'Thank you, %s you have been successfully registered.' % new_user.username
+                request,
+                'Thank you, %s you have been successfully registered.' % (
+                    new_user.username
                 )
+            )
             return redirect('/')
+
+    form = RegistrationForm()
     return render(request, 'registration.html', {
         'form': form
     })
 
 def login_view(request):
-    form = LoginForm()
+    if request.user.is_authenticated():
+        return redirect('/uploader/')
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -49,8 +56,8 @@ def login_view(request):
                     )
             else:
                 messages.error( request, 'Invalid username or password.')
-    if request.user.is_authenticated():
-        return redirect('/uploader/')
+
+    form = LoginForm()
     return render(request, 'login.html', {
         'form': form
     })
@@ -64,17 +71,15 @@ def logout_view(request):
 def uploader(request, project=None, revision=None, search=None):
     form = UploadedFileForm()
     projects = Project.objects.filter(users=request.user)
-    try:
+    if project:
         project = Project.objects.get(pk=project)
-    except Project.DoesNotExist:
-        pass #TODO: best way to do this?
     if request.method == 'POST':
         form = UploadedFileForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_file = form.save(commit=False)
             uploaded_file.project = project
-            uploaded_file.user_id = request.user.id
-            uploaded_file.datetime = datetime.now()
+            uploaded_file.user = request.user
+            uploaded_file.datetime = timezone.now()
             uploaded_file.save()
             project_users = [user.email for user in project.users.all()]
             # Build and send email message to all users on project besides
@@ -83,7 +88,10 @@ def uploader(request, project=None, revision=None, search=None):
             body = """
                 A new file called %s has been uploaded into file
                 cabinet by %s for the project %s.
-            """ % (uploaded_file.readable_file_name(), request.user.username, project.name)
+            """ % (
+                uploaded_file.readable_file_name(),
+                request.user.username,
+                project.name)
             message = EmailMessage(
                 subject,
                 body,
@@ -91,14 +99,12 @@ def uploader(request, project=None, revision=None, search=None):
             )
             #message.send()
             messages.success(
-                request, '%s has been successfully uploaded.' % uploaded_file.readable_file_name()
+                request, '%s has been successfully uploaded.' % (
+                    uploaded_file.readable_file_name()
                 )
+            )
             return redirect('/uploader/'+str(project.id))
     if project:
-        obj, created = UserActivity.objects.update_or_create(
-            user=request.user,
-            defaults={'last_project': project}
-        )
         project_files = UploadedFile.objects.filter(
             project=project
         ).order_by('-datetime')
@@ -121,7 +127,7 @@ def uploader(request, project=None, revision=None, search=None):
             # If page is not an integer, deliver first page.
             project_files = paginator.page(1)
         except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
+            # If page is out of range (e.g. 9999) deliver last page of results.
             project_files = paginator.page(paginator.num_pages)
         return render(request, 'uploader.html', {
             'project': project,
@@ -131,17 +137,31 @@ def uploader(request, project=None, revision=None, search=None):
             'revisions': revisions,
             'revision': revision,
             'search_term': search,
-            'recently_uploaded': recently_uploaded
+            'recently_uploaded': recently_uploaded,
+            'uploader': True
         })
     try:
         user_activity = UserActivity.objects.get(user=request.user)
-        project = str(user_activity.last_project.id)
-        return redirect('/uploader/'+project)
+        return redirect('/uploader/'+str(user_activity.last_project.id))
     except UserActivity.DoesNotExist:
-        return render(request, 'uploader.html', {
-            'selected_project': project,
-            'projects': projects
-        })
+        pass
+    return render(request, 'uploader.html', {
+        'selected_project': project,
+        'projects': projects,
+        'uploader': True
+    })
+
+@login_required
+def get_project(request):
+    project = request.POST['project']
+    if project:
+        obj, created = UserActivity.objects.update_or_create(
+            user=request.user,
+            defaults={'last_project_id': project}
+        )
+    else:
+        UserActivity.objects.get(user=request.user).delete()
+    return redirect('/uploader/'+project)
 
 @login_required
 def get_revision(request, project, search=None):
@@ -160,11 +180,18 @@ def get_search(request, project, revision=None):
     return redirect('/uploader/'+project+'/'+search)
 
 @login_required
-#TODO: rewrite this please :(
-def edit_profile(request, project=None):
+def update_profile(request, project=None):
+    form = EditProfileForm(initial={
+        'first_name': request.user.first_name,
+        'last_name': request.user.last_name,
+        'email': request.user.email
+    })
+    try:
+        project = Project.objects.get(pk=project)
+        form_save_redirect = '/uploader/'+str(project.id)
+    except Project.DoesNotExist:
+        form_save_redirect = '/'
     if request.method == 'POST':
-        if project:
-            project = Project.objects.get(pk=project)
         form = EditProfileForm(request.POST)
         if form.is_valid():
             user = request.user
@@ -173,57 +200,72 @@ def edit_profile(request, project=None):
             user.email = request.POST['email']
             user.save()
             messages.info(request, 'User profile has been updated.')
-            if project:
-                return redirect('/uploader/'+str(project.id))
-            return redirect('/uploader/')
-        return render(request, 'edit_profile.html', {
-            'user': request.user,
-            'form': form,
-            'project': project
-        })
-    else:
-        form = EditProfileForm(initial={
-            'first_name': request.user.first_name,
-            'last_name': request.user.last_name,
-            'email': request.user.email
-        })
-        if project:
-            project = Project.objects.get(pk=project)
-            return render(request, 'edit_profile.html', {
-                'user': request.user,
-                'form': form,
-                'project': project
-            })
-        return render(request, 'edit_profile.html', {
-            'user': request.user,
-            'form': form
-        })
+            return redirect(form_save_redirect)
+
+    return render(request, 'update_profile.html', {
+        'user': request.user,
+        'form': form,
+        'project': project
+    })
 
 @login_required
 def delete_file(request, project, file):
     UploadedFile.objects.get(pk=file).delete()
-    return redirect('/uploader/'+project+'/')
+    return redirect('/uploader/')
 
 @login_required
 def get_or_create_project(request, project=None):
-    form = ProjectForm()
-    projects = Project.objects.filter(users=request.user)
-    #TODO: is this legit?
-    try:
-        curr_proj = Project.objects.get(pk=project)
-        form = ProjectForm(instance=curr_proj)
-    except Project.DoesNotExist:
-        pass
     if request.method == 'POST':
-        form = ProjectForm(request.POST)
+        # If posted form has a current project than it is an 'edit'
+        try:
+            curr_proj = Project.objects.get(pk=project)
+            form = ProjectForm(
+                request.POST, instance=curr_proj, user=request.user)
+            messages.info(
+                request, 'Project %s has been updated.' % curr_proj.name)
+        # If posted form does not have current project then it is a new project
+        except Project.DoesNotExist:
+            form = ProjectForm(request.POST, user=request.user)
+            messages.info(
+                request, 'Project %s has been created.' % request.POST['name'])
         if form.is_valid():
             project = form.save()
+            project.users.add(request.user)
+            obj, created = UserActivity.objects.update_or_create(
+                user=request.user,
+                defaults={'last_project_id': project.id}
+            )
+            # Redirect to main page showing new project
             return redirect('/uploader/'+str(project.id))
-    return render(request, 'add_project.html', {
-        'form': form,
-        'projects': projects,
-        'project': project
-    })
+        return render(request, 'manage_project.html', {
+            'form': form,
+            'project': project
+        })
+    else:
+        # If not project that means new project so render blank form
+        form = ProjectForm(user=request.user)
+        # If project comes in that means they are editing the project so
+        # show the form with selected project info filled in
+        if project:
+            curr_proj = Project.objects.get(pk=project)
+            form = ProjectForm(instance=curr_proj, user=request.user)
+            return render(request, 'manage_project.html', {
+                'form': form,
+                'project': project,
+                'curr_proj': curr_proj
+            })
+        return render(request, 'manage_project.html', {
+            'form': form,
+            'project': project
+        })
+
+@login_required
+def delete_project(request, project):
+    orig_proj = Project.objects.get(pk=project)
+    Project.objects.get(pk=project).delete()
+    messages.success(
+        request, '%s has been permanently deleted.' % orig_proj.name)
+    return redirect('/uploader/')
 
 @login_required
 def get_file(request, id):
@@ -232,7 +274,10 @@ def get_file(request, id):
     file_path = os.path.join(settings.MEDIA_ROOT, path)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response = HttpResponse(
+                fh.read(),
+                content_type="application/vnd.ms-excel"
+            )
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
     else:
