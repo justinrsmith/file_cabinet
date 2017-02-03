@@ -217,12 +217,14 @@ def delete_file(request, project, file):
 def get_or_create_project(request, project=None):
     # TODO clean this up, this prevents a user editing url then editing any
     # project
-    req_project = Project.objects.get(pk=project)
-    if not req_project.created_by == request.user:
-        messages.info(request,
-            'You do not have permission to edit that project.'
-        )
-        return redirect('/')
+    if project:
+        req_project = Project.objects.get(pk=project)
+
+        if not req_project.created_by == request.user:
+            messages.info(request,
+                'You do not have permission to edit that project.'
+            )
+            return redirect('/')
     if request.method == 'POST':
         # If posted form has a current project than it is an 'edit'
         try:
