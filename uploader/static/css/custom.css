@@ -113,3 +113,10 @@ then pull-right*/
 .table-responsive {
     border: none;
 }
+.navbar-default .navbar-toggle:focus {
+    background-color: transparent;
+}
+
+.navbar-brand {
+    color: #fff !important; 
+}

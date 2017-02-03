@@ -215,9 +215,19 @@ def delete_file(request, project, file):
 
 @login_required
 def get_or_create_project(request, project=None):
+    # TODO clean this up, this prevents a user editing url then editing any
+    # project
+    req_project = Project.objects.get(pk=project)
+    if not req_project.created_by == request.user:
+        messages.info(request,
+            'You do not have permission to edit that project.'
+        )
+        return redirect('/')
     if request.method == 'POST':
         # If posted form has a current project than it is an 'edit'
         try:
+            # TODO: fix
+            new_proj_flag = False
             curr_proj = Project.objects.get(pk=project)
             form = ProjectForm(
                 request.POST, instance=curr_proj, user=request.user)
@@ -225,12 +235,17 @@ def get_or_create_project(request, project=None):
                 request, 'Project %s has been updated.' % curr_proj.name)
         # If posted form does not have current project then it is a new project
         except Project.DoesNotExist:
+            # TODO: fix
+            new_proj_flag = True
             form = ProjectForm(request.POST, user=request.user)
             messages.info(
                 request, 'Project %s has been created.' % request.POST['name'])
         if form.is_valid():
             project = form.save()
             project.users.add(request.user)
+            if new_proj_flag:
+                project.created_by = request.user
+            project.save()
             obj, created = UserActivity.objects.update_or_create(
                 user=request.user,
                 defaults={'last_project_id': project.id}
