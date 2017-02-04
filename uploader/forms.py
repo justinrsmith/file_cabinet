@@ -114,7 +114,7 @@ class UploadedFileForm(forms.ModelForm):
 
     def clean_file(self):
         file = self.cleaned_data.get('file')
-        if '.' not in file:
+        if '.' not in file.name:
             raise forms.ValidationError('File must have an extension.')
         name, ext = file.name.split('.')
         if ext not in ALLOWED_EXTENSIONS:
