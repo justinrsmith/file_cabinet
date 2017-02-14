@@ -293,7 +293,7 @@ def get_file(request, id):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(
                 fh.read(),
-                content_type="application/vnd.ms-excel"
+                content_type='application/force-download'
             )
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
