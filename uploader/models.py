@@ -41,10 +41,17 @@ class UploadedFile(models.Model):
         name, extension = os.path.splitext(self.file.name)
         return extension
 
+    def __str__(self):
+        return self.readable_file_name()
+
 
 class UserActivity(models.Model):
     user = models.OneToOneField(User)#TODO??, on_delete = models.CASCADE)
     last_project = models.ForeignKey(Project)
+
+    def __str__(self):
+        return '%s - %s' % (self.user, self.last_project)
+
 
 @receiver(post_delete, sender=UploadedFile)
 def uploadedfile_delete(sender, instance, **kwargs):
