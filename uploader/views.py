@@ -74,7 +74,7 @@ def uploader(request, project=None, revision=None, search=None):
     if project:
         project = Project.objects.get(pk=project)
     if request.method == 'POST':
-        form = UploadedFileForm(request.POST, request.FILES)
+        form = UploadedFileForm(request.POST, request.FILES, project=project)
         if form.is_valid():
             uploaded_file = form.save(commit=False)
             uploaded_file.project = project

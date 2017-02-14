@@ -77,6 +77,8 @@ class LoginForm(forms.Form):
 
 class UploadedFileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.project = kwargs.get('project', None)
+        if self.project: kwargs.pop('project')
         super(UploadedFileForm, self).__init__(*args, **kwargs)
         self.fields['revision'] .widget.attrs.update({
             'class': 'form-control',
@@ -107,7 +109,11 @@ class UploadedFileForm(forms.ModelForm):
         file = self.cleaned_data.get('file', None)
         if file:
             name, ext = file.name.split('.')
-            uploaded_files = UploadedFile.objects.filter(file__contains=name, revision=revision)
+            uploaded_files = UploadedFile.objects.filter(
+                file__contains=name,
+                project=self.project,
+                revision=revision
+            )
             if uploaded_files:
                 raise forms.ValidationError('%s already exists in project for revision number %s.' % (file.name, revision))
         return revision
