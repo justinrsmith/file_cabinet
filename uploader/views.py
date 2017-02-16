@@ -5,11 +5,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.template.loader import get_template
 from django.utils import timezone
 
 from uploader.models import UploadedFile, Project, UserActivity
@@ -81,23 +82,27 @@ def uploader(request, project=None, revision=None, search=None):
             uploaded_file.user = request.user
             uploaded_file.datetime = timezone.now()
             uploaded_file.save()
-            project_users = [user.email for user in project.users.all()]
             # Build and send email message to all users on project besides
             # the user who uploaded
+            project_users = [user.email for user in project.users.all()]
+            context = {
+                'file_name': uploaded_file.readable_file_name(),
+                'project_name': project.name,
+                'user': request.user,
+                'datetime': uploaded_file.datetime
+            }
+            template = get_template('email_notification.html')
+            html = template.render(context)
             subject = 'A new file has been uploaded to %s' % project.name
-            body = """
-                A new file called %s has been uploaded into file
-                cabinet by %s for the project %s.
-            """ % (
-                uploaded_file.readable_file_name(),
-                request.user.username,
-                project.name)
-            message = EmailMessage(
+            mail = EmailMultiAlternatives(
                 subject,
-                body,
-                bcc=project_users #bcc
+                html,
+                'filecabinetapp@gmail.com',
+                [],
+                project_users
             )
-            #message.send()
+            mail.content_subtype = 'html'
+            mail.send()
             messages.success(
                 request, '%s has been successfully uploaded.' % (
                     uploaded_file.readable_file_name()
