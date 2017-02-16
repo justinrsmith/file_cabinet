@@ -14,6 +14,7 @@ ALLOWED_EXTENSIONS = [
     'csv',
     'py',
     'txt',
+    'html',
 ]
 
 MAX_UPLOAD_SIZE = 52428800
