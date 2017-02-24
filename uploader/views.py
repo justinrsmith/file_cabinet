@@ -84,25 +84,26 @@ def uploader(request, project=None, revision=None, search=None):
             uploaded_file.save()
             # Build and send email message to all users on project besides
             # the user who uploaded
-            project_users = [user.email for user in project.users.all()]
-            context = {
-                'file_name': uploaded_file.readable_file_name(),
-                'project_name': project.name,
-                'user': request.user,
-                'datetime': uploaded_file.datetime
-            }
-            template = get_template('email_notification.html')
-            html = template.render(context)
-            subject = 'A new file has been uploaded to %s' % project.name
-            mail = EmailMultiAlternatives(
-                subject,
-                html,
-                'filecabinetapp@gmail.com',
-                [],
-                project_users
-            )
-            mail.content_subtype = 'html'
-            mail.send()
+            project_users = [user for user in project.users.exclude(id=request.user.id)]
+            for pu in project_users:
+                context = {
+                    'file_name': uploaded_file.readable_file_name(),
+                    'project_name': project.name,
+                    'user': pu,
+                    'datetime': uploaded_file.datetime
+                }
+                template = get_template('email_notification.html')
+                html = template.render(context)
+                subject = 'A new file has been uploaded to %s' % project.name
+                mail = EmailMultiAlternatives(
+                    subject,
+                    html,
+                    'filecabinetapp@gmail.com',
+                    [],
+                    [pu.email]
+                )
+                mail.content_subtype = 'html'
+                mail.send()
             messages.success(
                 request, '%s has been successfully uploaded.' % (
                     uploaded_file.readable_file_name()
