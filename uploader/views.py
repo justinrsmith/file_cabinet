@@ -90,7 +90,8 @@ def uploader(request, project=None, revision=None, search=None):
                     'file_name': uploaded_file.readable_file_name(),
                     'project_name': project.name,
                     'user': pu,
-                    'datetime': uploaded_file.datetime
+                    'datetime': uploaded_file.datetime,
+                    'uploaded_by': uploaded_file.user
                 }
                 template = get_template('email_notification.html')
                 html = template.render(context)
